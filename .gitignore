@@ -1,0 +1,38 @@
+# N8N Data
+node_modules/
+.n8n/
+n8n_data/
+
+# Credentials sensibles
+credentials/
+*.env
+.env.local
+
+# Workflows locaux (décommentez si vous ne voulez pas les versionner)
+# workflows/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Docker
+.docker/
+
+# Backups
+*.tar.gz
+*.zip
+backup/
