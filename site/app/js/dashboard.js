@@ -383,11 +383,12 @@
 
     const markers = DB.cities.map((c) => {
       const [x, y] = coords[c]; const d = byCity[c];
-      const r = 4 + (d.vehicles / maxV) * 9;
+      const r = 2.4 + (d.vehicles / maxV) * 3.2;
       return `<g class="mk" data-city="${c}" transform="translate(${x},${y})">
-        <circle class="mk__halo" r="${r + 8}"></circle>
+        <circle class="mk__halo" r="${r + 4}"></circle>
         <circle class="mk__dot" r="${r}"></circle>
-        <text class="mk__lbl" y="${-r - 6}">${c}</text>
+        <text class="mk__lbl" y="${-r - 2.4}">${c}</text>
+        <text class="mk__cnt" y="${r + 4.2}">${d.vehicles} véh.</text>
       </g>`;
     }).join("");
 

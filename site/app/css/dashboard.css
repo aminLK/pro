@@ -175,14 +175,15 @@ input[type=range]::-moz-range-thumb{width:20px;height:20px;border:none;border-ra
 /* ===================== Carte ===================== */
 .map-wrap{height:380px;display:grid;place-items:center}
 .map-svg{height:100%;max-width:100%}
-.map-fr{fill:rgba(200,164,92,.05);stroke:var(--line-2);stroke-width:.8;stroke-linejoin:round}
+.map-fr{fill:rgba(200,164,92,.06);stroke:rgba(200,164,92,.45);stroke-width:.7;stroke-linejoin:round}
 .mk{cursor:pointer}
-.mk__halo{fill:var(--gold);opacity:.12;transform-box:fill-box;transform-origin:center;transition:opacity .2s}
-.mk__dot{fill:var(--gold);stroke:#0a0c11;stroke-width:1;transition:fill .2s,r .2s}
-.mk__lbl{fill:var(--muted);font-size:4px;text-anchor:middle;font-family:"Inter";opacity:0;transition:opacity .2s}
-.mk:hover .mk__lbl,.mk.is-on .mk__lbl{opacity:1;fill:var(--text)}
+.mk__halo{fill:var(--gold);opacity:.14;transform-box:fill-box;transform-origin:center;transition:opacity .2s}
+.mk__dot{fill:var(--gold);stroke:#0a0c11;stroke-width:.8;transition:fill .2s}
+.mk__lbl{fill:var(--text);font-size:3.4px;font-weight:600;text-anchor:middle;font-family:"Sora",sans-serif}
+.mk__cnt{fill:var(--muted);font-size:2.7px;text-anchor:middle;font-family:"Inter",sans-serif}
+.mk:hover .mk__lbl,.mk.is-on .mk__lbl{fill:var(--gold-2)}
 .mk:hover .mk__dot,.mk.is-on .mk__dot{fill:var(--gold-2)}
-.mk:hover .mk__halo,.mk.is-on .mk__halo{opacity:.28}
+.mk:hover .mk__halo,.mk.is-on .mk__halo{opacity:.34}
 .mk__halo{animation:halo 3s ease-in-out infinite}
 @keyframes halo{0%,100%{opacity:.1}50%{opacity:.22}}
 tr.row-on{background:var(--gold-soft)!important}
