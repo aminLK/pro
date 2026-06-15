@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Velorah — Location de voitures premium. Berlines, SUV, sportives et véhicules électriques. Réservation en ligne en quelques clics." />
+  <meta name="theme-color" content="#0b0d12" />
+  <title>Velorah — Location de voitures premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c8a45c'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%230b0d12'%3EV%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- ===== Header ===== -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <a href="#hero" class="brand" aria-label="Velorah accueil">
+        <span class="brand__mark">V</span>
+        <span class="brand__name">VELORAH</span>
+      </a>
+      <nav class="nav" id="nav">
+        <a href="#fleet" class="nav__link">Flotte</a>
+        <a href="#how" class="nav__link">Comment ça marche</a>
+        <a href="#why" class="nav__link">Avantages</a>
+        <a href="#reviews" class="nav__link">Avis</a>
+        <a href="#contact" class="nav__link">Contact</a>
+        <a href="#fleet" class="btn btn--gold nav__cta">Réserver</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__overlay"></div>
+    <div class="container hero__content">
+      <p class="hero__eyebrow" data-reveal>Location premium · Sans dépôt caché · 24h/24</p>
+      <h1 class="hero__title" data-reveal>
+        Conduisez l'exception.<br /><span class="text-gold">Louez avec Velorah.</span>
+      </h1>
+      <p class="hero__sub" data-reveal>
+        Une flotte de véhicules d'exception, livrés où vous voulez. Réservation
+        instantanée, kilométrage illimité et assistance premium incluse.
+      </p>
+
+      <!-- Booking search bar -->
+      <form class="search" id="searchBar" data-reveal>
+        <div class="search__field">
+          <label for="s-loc">Lieu de prise en charge</label>
+          <input type="text" id="s-loc" name="loc" placeholder="Paris, Aéroport CDG…" value="Paris Centre" />
+        </div>
+        <div class="search__field">
+          <label for="s-start">Départ</label>
+          <input type="date" id="s-start" name="start" />
+        </div>
+        <div class="search__field">
+          <label for="s-end">Retour</label>
+          <input type="date" id="s-end" name="end" />
+        </div>
+        <button type="submit" class="btn btn--gold search__submit">Rechercher</button>
+      </form>
+    </div>
+
+    <div class="hero__stats container">
+      <div class="stat" data-reveal><span class="stat__num" data-count="120">0</span><span class="stat__label">Véhicules disponibles</span></div>
+      <div class="stat" data-reveal><span class="stat__num" data-count="38">0</span><span class="stat__label">Villes desservies</span></div>
+      <div class="stat" data-reveal><span class="stat__num" data-count="14000">0</span><span class="stat__label">Clients satisfaits</span></div>
+      <div class="stat" data-reveal><span class="stat__num" data-count="49" data-suffix="">0</span><span class="stat__label">Note 4.9 / 5</span></div>
+    </div>
+  </section>
+
+  <!-- ===== Fleet ===== -->
+  <section class="section fleet" id="fleet">
+    <div class="container">
+      <div class="section__head" data-reveal>
+        <p class="section__eyebrow">Notre flotte</p>
+        <h2 class="section__title">Trouvez le véhicule qui vous ressemble</h2>
+        <p class="section__lead">Du citadin agile à la grande routière de luxe — chaque véhicule est entretenu, désinfecté et prêt à partir.</p>
+      </div>
+
+      <div class="filters" id="filters" data-reveal>
+        <button class="filter is-active" data-filter="all">Tous</button>
+        <button class="filter" data-filter="Citadine">Citadines</button>
+        <button class="filter" data-filter="Berline">Berlines</button>
+        <button class="filter" data-filter="SUV">SUV</button>
+        <button class="filter" data-filter="Sport">Sportives</button>
+        <button class="filter" data-filter="Luxe">Luxe</button>
+        <button class="filter" data-filter="Électrique">Électriques</button>
+      </div>
+
+      <div class="fleet__grid" id="fleetGrid"><!-- injecté par JS --></div>
+      <p class="fleet__empty" id="fleetEmpty" hidden>Aucun véhicule dans cette catégorie pour le moment.</p>
+    </div>
+  </section>
+
+  <!-- ===== How it works ===== -->
+  <section class="section how" id="how">
+    <div class="container">
+      <div class="section__head" data-reveal>
+        <p class="section__eyebrow">Simple & rapide</p>
+        <h2 class="section__title">Trois étapes, et c'est parti</h2>
+      </div>
+      <div class="steps">
+        <article class="step" data-reveal>
+          <span class="step__num">01</span>
+          <h3 class="step__title">Choisissez</h3>
+          <p>Sélectionnez votre véhicule, vos dates et votre lieu de prise en charge. Prix transparent, sans surprise.</p>
+        </article>
+        <article class="step" data-reveal>
+          <span class="step__num">02</span>
+          <h3 class="step__title">Réservez</h3>
+          <p>Confirmez en ligne en 2 minutes. Paiement sécurisé et annulation gratuite jusqu'à 48h avant.</p>
+        </article>
+        <article class="step" data-reveal>
+          <span class="step__num">03</span>
+          <h3 class="step__title">Roulez</h3>
+          <p>Récupérez les clés ou faites-vous livrer le véhicule. Assistance 24/7 partout en Europe.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Why ===== -->
+  <section class="section why" id="why">
+    <div class="container why__inner">
+      <div class="why__media" data-reveal></div>
+      <div class="why__content">
+        <p class="section__eyebrow" data-reveal>Pourquoi Velorah</p>
+        <h2 class="section__title" data-reveal>Le luxe de la simplicité</h2>
+        <ul class="features">
+          <li class="feature" data-reveal><strong>Kilométrage illimité</strong>Roulez sans compter, partout en Europe.</li>
+          <li class="feature" data-reveal><strong>Livraison à domicile</strong>Votre véhicule devant chez vous ou à l'aéroport.</li>
+          <li class="feature" data-reveal><strong>Zéro frais caché</strong>Assurance, assistance et taxes incluses dans le prix.</li>
+          <li class="feature" data-reveal><strong>Annulation gratuite</strong>Flexibilité totale jusqu'à 48h avant le départ.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Reviews ===== -->
+  <section class="section reviews" id="reviews">
+    <div class="container">
+      <div class="section__head" data-reveal>
+        <p class="section__eyebrow">Ils nous font confiance</p>
+        <h2 class="section__title">4.9/5 sur plus de 6 000 avis</h2>
+      </div>
+      <div class="reviews__grid">
+        <figure class="review" data-reveal>
+          <div class="review__stars">★★★★★</div>
+          <blockquote>« Voiture impeccable, livrée à l'heure devant mon hôtel. Le processus de réservation est d'une fluidité rare. »</blockquote>
+          <figcaption><span>Camille D.</span> · Paris</figcaption>
+        </figure>
+        <figure class="review" data-reveal>
+          <div class="review__stars">★★★★★</div>
+          <blockquote>« J'ai loué une électrique pour le week-end : aucun frais surprise, kilométrage illimité, top du début à la fin. »</blockquote>
+          <figcaption><span>Yacine B.</span> · Lyon</figcaption>
+        </figure>
+        <figure class="review" data-reveal>
+          <div class="review__stars">★★★★★</div>
+          <blockquote>« Service client réactif, véhicule haut de gamme nickel. Velorah a changé ma façon de voyager pour le travail. »</blockquote>
+          <figcaption><span>Sophie M.</span> · Bordeaux</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA / Contact ===== -->
+  <section class="section cta" id="contact">
+    <div class="container cta__inner" data-reveal>
+      <h2 class="cta__title">Prêt à prendre la route ?</h2>
+      <p class="cta__sub">Réservez en ligne ou laissez-nous vos coordonnées : un conseiller vous rappelle sous 1h.</p>
+      <form class="contact" id="contactForm">
+        <input type="text" name="name" placeholder="Votre nom" required />
+        <input type="email" name="email" placeholder="Votre e-mail" required />
+        <input type="tel" name="phone" placeholder="Téléphone" />
+        <button type="submit" class="btn btn--gold">Être rappelé</button>
+      </form>
+      <p class="contact__msg" id="contactMsg" hidden></p>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div class="footer__brand">
+        <span class="brand"><span class="brand__mark">V</span><span class="brand__name">VELORAH</span></span>
+        <p>Location de voitures premium. Roulez l'esprit libre.</p>
+      </div>
+      <div class="footer__cols">
+        <div><h4>Société</h4><a href="#why">À propos</a><a href="#reviews">Avis</a><a href="#contact">Contact</a></div>
+        <div><h4>Flotte</h4><a href="#fleet">Berlines</a><a href="#fleet">SUV</a><a href="#fleet">Électriques</a></div>
+        <div><h4>Aide</h4><a href="#how">Comment ça marche</a><a href="#contact">Assistance 24/7</a><a href="#">CGV</a></div>
+      </div>
+    </div>
+    <div class="container footer__bottom">
+      <span>© <span id="year"></span> Velorah. Tous droits réservés.</span>
+      <span>Conçu avec soin · Paris</span>
+    </div>
+  </footer>
+
+  <!-- ===== Booking Modal ===== -->
+  <div class="modal" id="bookingModal" aria-hidden="true">
+    <div class="modal__overlay" data-close></div>
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <button class="modal__close" data-close aria-label="Fermer">&times;</button>
+      <div class="modal__body" id="modalBody"><!-- injecté par JS --></div>
+    </div>
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
