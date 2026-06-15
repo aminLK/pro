@@ -3,6 +3,8 @@
    =================================================================== */
 (function () {
   "use strict";
+  // Garde d'authentification (démo) : redirige vers la connexion si non authentifié.
+  try { if (sessionStorage.getItem("velorah_auth") !== "1") { window.location.replace("login.html"); return; } } catch (_) {}
   const DB = window.VELORAH_DB;
   const C = window.Charts;
   const $ = (s, c = document) => c.querySelector(s);
@@ -19,9 +21,11 @@
     fleet: ["Flotte", "120 véhicules · valeur, occupation et score de risque"],
     bookings: ["Réservations", "Locations confirmées, en cours et terminées"],
     insurance: ["Assurance & Risque", "Sinistralité, scoring télématique et prime estimée"],
+    simulator: ["Simulateur de prime", "Ajustez les paramètres, la prime se recalcule en direct"],
+    map: ["Carte d'activité", "Flotte, réservations et sinistres par ville"],
     report: ["Rapport assureur", "Synthèse prête à présenter à votre compagnie"],
   };
-  const views = { overview: renderOverview, fleet: renderFleet, bookings: renderBookings, insurance: renderInsurance, report: renderReport };
+  const views = { overview: renderOverview, fleet: renderFleet, bookings: renderBookings, insurance: renderInsurance, simulator: renderSimulator, map: renderMap, report: renderReport };
 
   function go(name) {
     $$(".side-link").forEach((b) => b.classList.toggle("is-active", b.dataset.view === name));
@@ -284,6 +288,142 @@
   }
 
   /* ================================================================
+     VUE — Simulateur de prime  (★ argument de négociation)
+     ================================================================ */
+  function renderSimulator() {
+    view.innerHTML = `
+      <div class="grid" style="grid-template-columns:1fr 1fr">
+        <div class="card card--pad">
+          <div class="card__head"><h3>Paramètres de la flotte</h3><span class="sub">faites varier les curseurs</span></div>
+          <div class="sim-controls" id="simControls">
+            ${slider("count", "Nombre de véhicules", 10, 400, 120, "")}
+            ${slider("value", "Valeur moyenne / véhicule", 15000, 160000, 80250, " €", 500)}
+            ${slider("driver", "Score conducteur moyen", 55, 99, DB.insurance.avgDriverScore, " / 100")}
+            ${slider("franchise", "Franchise par sinistre", 0, 3000, 800, " €", 100)}
+            <div class="sim-toggle" id="telToggle">
+              <label class="bm-check"><input type="checkbox" id="tel" checked> Télématique embarquée (100% de la flotte)</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card--pad sim-result" id="simResult"><!-- live --></div>
+      </div>
+
+      <div class="card card--pad">
+        <div class="card__head"><h3>Décomposition de la prime annuelle</h3><span class="sub">impact de chaque levier</span></div>
+        <div class="chart-wrap chart-wrap--sm"><canvas id="cSim"></canvas></div>
+      </div>`;
+
+    const get = (id) => +$("#sim-" + id).value;
+    const compute = () => {
+      const count = get("count"), value = get("value"), driver = get("driver"), franchise = get("franchise");
+      const tel = $("#tel").checked;
+      // Taux de base : 5,2% de la valeur, atténué par une franchise plus élevée
+      const baseRate = 0.052 - (franchise / 3000) * 0.012;
+      const gross = count * value * baseRate;
+      // Remise comportementale (télématique) : jusqu'à ~22%
+      const telDiscount = tel ? Math.max(0, (driver - 60) / 100 * 0.55) : 0;
+      // Bonus volume : grandes flottes mieux négociées
+      const volDiscount = Math.min(0.08, count / 400 * 0.08);
+      const totalDiscount = Math.min(0.4, telDiscount + volDiscount);
+      const net = gross * (1 - totalDiscount);
+      const saving = gross - net;
+      return { count, value, driver, franchise, tel, gross, telDiscount, volDiscount, totalDiscount, net, saving };
+    };
+
+    const draw = () => {
+      const r = compute();
+      // libellés des curseurs
+      $("#sim-count-out").textContent = num(r.count);
+      $("#sim-value-out").textContent = euro(r.value);
+      $("#sim-driver-out").textContent = r.driver + " / 100";
+      $("#sim-franchise-out").textContent = euro(r.franchise);
+
+      $("#simResult").innerHTML = `
+        <div class="card__head"><h3>Prime estimée</h3><span class="sub">par an</span></div>
+        <div class="sim-big">${euro(r.net)}<small>/ an</small></div>
+        <div class="sim-saving ${r.saving > 0 ? "pos" : ""}">${r.saving > 0 ? "▼ " + euro(r.saving) + " économisés (-" + Math.round(r.totalDiscount * 100) + "%)" : "Aucune remise active"}</div>
+        <div class="sim-lines">
+          <div class="bm-line"><span>Prime brute (avant remises)</span><span>${euro(r.gross)}</span></div>
+          <div class="bm-line"><span>Remise télématique</span><span>-${Math.round(r.telDiscount * 100)}%</span></div>
+          <div class="bm-line"><span>Bonus volume flotte</span><span>-${Math.round(r.volDiscount * 100)}%</span></div>
+          <div class="bm-line total"><span>Prime nette</span><b>${euro(r.net)}</b></div>
+        </div>
+        <div class="callout" style="margin-top:16px"><span>✓</span><div>À présenter : ${r.tel ? "la télématique" : "sans télématique, "} ${r.tel ? "génère " + Math.round(r.telDiscount * 100) + "% de remise comportementale" : "vous laissez " + euro(r.gross * 0.15) + "/an sur la table"}.</div></div>`;
+
+      C.bar($("#cSim"), {
+        values: [Math.round(r.gross), Math.round(r.gross * r.telDiscount), Math.round(r.gross * r.volDiscount), Math.round(r.net)],
+        labels: ["Brute", "Rem. télé.", "Bonus vol.", "Nette"],
+        suffix: "",
+        colorFor: (i) => [C.COLORS.red, C.COLORS.gold, C.COLORS.blue, C.COLORS.green][i],
+      });
+    };
+    $("#simControls").addEventListener("input", draw);
+    draw();
+  }
+  function slider(id, label, min, max, val, suffix = "", step = 1) {
+    return `<div class="sim-field">
+      <div class="sim-field__top"><label>${label}</label><span class="sim-out" id="sim-${id}-out"></span></div>
+      <input type="range" id="sim-${id}" min="${min}" max="${max}" step="${step}" value="${val}" data-suffix="${suffix}" />
+    </div>`;
+  }
+
+  /* ================================================================
+     VUE — Carte d'activité (l'Hexagone stylisé)
+     ================================================================ */
+  function renderMap() {
+    // agrégation par ville
+    const byCity = {};
+    DB.cities.forEach((c) => (byCity[c] = { vehicles: 0, value: 0, claims: 0, bookings: 0 }));
+    DB.fleet.forEach((v) => { const c = byCity[v.city]; if (c) { c.vehicles++; c.value += v.value; c.claims += v.claims; } });
+    DB.bookings.forEach((b) => { if (byCity[b.city]) byCity[b.city].bookings++; });
+    // coordonnées approximatives (viewBox 0..100 x 0..120)
+    const coords = { Paris: [50, 32], Lille: [55, 12], Lyon: [62, 66], Marseille: [66, 98], Bordeaux: [30, 78], Nice: [82, 92] };
+    const maxV = Math.max(...DB.cities.map((c) => byCity[c].vehicles));
+
+    const markers = DB.cities.map((c) => {
+      const [x, y] = coords[c]; const d = byCity[c];
+      const r = 4 + (d.vehicles / maxV) * 9;
+      return `<g class="mk" data-city="${c}" transform="translate(${x},${y})">
+        <circle class="mk__halo" r="${r + 8}"></circle>
+        <circle class="mk__dot" r="${r}"></circle>
+        <text class="mk__lbl" y="${-r - 6}">${c}</text>
+      </g>`;
+    }).join("");
+
+    view.innerHTML = `
+      <div class="grid" style="grid-template-columns:1.3fr 1fr">
+        <div class="card card--pad">
+          <div class="card__head"><h3>Implantation de la flotte</h3><span class="sub">survolez une ville</span></div>
+          <div class="map-wrap">
+            <svg viewBox="0 0 100 120" class="map-svg" preserveAspectRatio="xMidYMid meet">
+              <path class="map-fr" d="M48 6 L60 9 L58 18 L68 22 L72 34 L86 40 L84 52 L90 64 L82 74 L86 90 L74 96 L66 108 L56 104 L48 110 L40 100 L28 96 L22 84 L12 74 L20 62 L14 50 L24 40 L22 28 L34 22 L40 12 Z"/>
+              ${markers}
+            </svg>
+          </div>
+        </div>
+        <div class="card card--pad">
+          <div class="card__head"><h3>Détail par ville</h3><span class="sub" id="mapHint">Toutes agences</span></div>
+          <div class="table-wrap">
+            <table><thead><tr><th>Ville</th><th>Véhicules</th><th>Locations</th><th>Sinistres</th><th>Valeur</th></tr></thead>
+            <tbody id="mapBody">${DB.cities.map((c) => { const d = byCity[c]; return `
+              <tr data-city="${c}"><td class="cell-strong">${c}</td><td>${d.vehicles}</td><td>${d.bookings}</td>
+              <td>${d.claims ? `<span class="tag tag--red">${d.claims}</span>` : `<span class="tag tag--green">0</span>`}</td>
+              <td class="mono">${eur1(d.value)}</td></tr>`; }).join("")}</tbody></table>
+          </div>
+        </div>
+      </div>`;
+
+    const highlight = (city) => {
+      $$(".mk").forEach((m) => m.classList.toggle("is-on", m.dataset.city === city));
+      $$("#mapBody tr").forEach((r) => r.classList.toggle("row-on", r.dataset.city === city));
+      $("#mapHint").textContent = city ? "Agence de " + city : "Toutes agences";
+    };
+    $$(".mk").forEach((m) => { m.addEventListener("mouseenter", () => highlight(m.dataset.city)); m.addEventListener("mouseleave", () => highlight(null)); });
+    $$("#mapBody tr").forEach((r) => { r.addEventListener("mouseenter", () => highlight(r.dataset.city)); r.addEventListener("mouseleave", () => highlight(null)); });
+  }
+
+  /* ================================================================
      VUE — Rapport assureur
      ================================================================ */
   function renderReport() {
@@ -326,6 +466,10 @@
       </div>`;
     $("#dlReport").addEventListener("click", () => { window.print && toast("PDF prêt", "Utilisez la boîte d'impression pour enregistrer en PDF."); setTimeout(() => window.print(), 300); });
   }
+
+  /* ---------- Déconnexion ---------- */
+  const logoutBtn = $("#logoutBtn");
+  if (logoutBtn) logoutBtn.addEventListener("click", () => { try { sessionStorage.removeItem("velorah_auth"); } catch (_) {} window.location.href = "login.html"; });
 
   /* ---------- Boot ---------- */
   go("overview");

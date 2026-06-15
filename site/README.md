@@ -40,7 +40,12 @@ Accessible depuis le lien « Espace Pro » du site, ou directement sur `app/inde
 - **Réservations** : suivi des locations (confirmée / en cours / terminée), recherche et filtres.
 - **Assurance & Risque** ★ : la pièce maîtresse — sinistralité, ratio S/P, scoring **télématique**
   de conduite, jauge de risque flotte, véhicules à surveiller et **économie de prime estimée**.
+- **Simulateur de prime** ★ : curseurs (taille de flotte, valeur, score conducteur, franchise, télématique)
+  → prime annuelle recalculée **en direct**, décomposition des remises et économie estimée.
+- **Carte d'activité** : l'Hexagone stylisé avec bulles par ville (flotte, locations, sinistres), survol interactif.
 - **Rapport assureur** : dossier de souscription auto-généré, exportable en PDF (impression navigateur).
+
+Accès protégé par un **écran de connexion** (`app/login.html`, démo : identifiants pré-remplis).
 
 Moteur de graphiques maison (`app/js/charts.js`) : courbes, barres, donut, jauge, sparkline —
 haute résolution (devicePixelRatio), animés, responsive, **zéro CDN**.
