@@ -74,7 +74,8 @@ Accessible via « Espace Pro » du site, ou directement sur `app/login.html`.
   **compte à rebours SLA live** et **parcours complet jusqu'à la livraison**.
 - **Concessionnaires** : pool de sourcing VL / PL, stock par énergie et délais de mise à disposition.
 - **Véhicules à dispo** : espace particuliers (revenus reversés, notes, missions).
-- **Enchères urgentes** ★ : marketplace inversé — besoins postés, offres prix + délai, meilleure offre surlignée, attribution.
+- **Enchères urgentes** ★ : marketplace inversé — besoins postés, offres prix + délai, **flux d'enchères en temps réel** (les offres tombent automatiquement, notifications, pause/reprise), meilleure offre surlignée, attribution.
+- **Carte temps réel** ★ : Hexagone projeté (lat/lon → SVG), concessions, sinistres en attente et **livraisons en transit** animées (convois), avec **ETA de livraison en direct** par dossier.
 - **Flotte & tracking** : 120 véhicules, recherche + filtres, kilométrage, occupation et **score de risque**.
 - **Réservations** : suivi des locations (confirmée / en cours / terminée), recherche et filtres.
 - **Assurance & Risque** ★ : la pièce maîtresse — sinistralité, ratio S/P, scoring **télématique**

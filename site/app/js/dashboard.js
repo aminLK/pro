@@ -24,12 +24,13 @@
     insurance: ["Assurance & Risque", "Sinistralité, scoring télématique et prime estimée"],
     simulator: ["Simulateur de prime", "Ajustez les paramètres, la prime se recalcule en direct"],
     providers: ["Véhicules à disposition", "Particuliers mettant leur véhicule au service des assurances"],
-    auctions: ["Marketplace inversé — enchères urgentes", "Le besoin est posté, les fournisseurs enchérissent"],
+    auctions: ["Marketplace inversé — enchères urgentes", "Le besoin est posté, les fournisseurs enchérissent en direct"],
+    livemap: ["Carte temps réel", "Sinistres en cours, concessions et livraisons en direct"],
     bookings: ["Réservations", "Locations confirmées, en cours et terminées"],
     map: ["Carte d'activité", "Flotte, réservations et sinistres par ville"],
     report: ["Rapport assureur", "Synthèse prête à présenter à votre compagnie"],
   };
-  const views = { overview: renderOverview, dealers: renderDealers, fleet: renderFleet, claims: renderClaims, insurance: renderInsurance, simulator: renderSimulator, providers: renderProviders, auctions: renderAuctions, bookings: renderBookings, map: renderMap, report: renderReport };
+  const views = { overview: renderOverview, dealers: renderDealers, fleet: renderFleet, claims: renderClaims, insurance: renderInsurance, simulator: renderSimulator, providers: renderProviders, auctions: renderAuctions, livemap: renderLiveMap, bookings: renderBookings, map: renderMap, report: renderReport };
 
   /* ---------- Timers (compte à rebours live) ---------- */
   let timers = [];
@@ -706,8 +707,17 @@
   /* ================================================================
      VUE — Marketplace inversé (enchères urgentes)
      ================================================================ */
+  let liveOn = true, flashRef = null;
   function renderAuctions() {
+    const openCount = () => DB.auctions.filter((a) => a.status !== "Attribuée").length;
     view.innerHTML = `
+      <div class="card card--pad" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div style="display:flex;align-items:center;gap:.8rem">
+          <span class="pill pill--live"><i></i>Enchères en direct</span>
+          <span class="sub" style="color:var(--muted);font-size:.88rem"><b id="aucOpen">${openCount()}</b> enchères ouvertes · les offres tombent en temps réel</span>
+        </div>
+        <button class="btn btn--ghost" id="liveToggle">${liveOn ? "⏸ Mettre en pause" : "▶ Reprendre"}</button>
+      </div>
       <div class="callout" style="background:rgba(106,166,255,.12);border-color:rgba(106,166,255,.3)"><span>⟳</span><div><b>Enchères inversées</b> — un assureur poste un besoin urgent. Concessionnaires et particuliers proposent prix + délai ; la meilleure offre l'emporte avant l'échéance.</div></div>
       <div class="grid" id="aucList" style="grid-template-columns:repeat(auto-fill,minmax(380px,1fr))"></div>`;
 
@@ -716,13 +726,14 @@
         const r = remain(a.deadlineAt);
         const best = a.bids[0];
         const closed = a.status === "Attribuée" || r.over;
-        return `<div class="auction">
+        return `<div class="auction ${flashRef === ai ? "auction--flash" : ""}" data-auc="${ai}">
           <div class="auction__top">
             <div><div class="auction__need">${typeBadge(a.type)} ${a.need}</div><div class="auction__meta">${a.ref} · ${a.insurer} · ${a.city} · ${a.energy} · budget max ${euro(a.budgetMax)}</div></div>
             <div class="countdown ${closed ? "" : r.cls}" data-deadline="${a.deadlineAt}" style="text-align:right">${closed ? "Clôturée" : r.txt}<small>${closed ? "attribuée" : "avant clôture"}</small></div>
           </div>
           <div class="auction__bids">
-            ${a.bids.map((b, bi) => `
+            <div class="auction__bidcount">${a.bids.length} offre${a.bids.length > 1 ? "s" : ""}</div>
+            ${a.bids.slice(0, 5).map((b, bi) => `
               <div class="bid ${bi === 0 ? "best" : ""}">
                 <div class="bid__who">${b.kind === "Particulier" ? "<span class='tag tag--muted'>Particulier</span>" : "<span class='tag tag--gold'>Concession</span>"} <span>${b.provider}</span></div>
                 <span class="bid__delivery">sous ${b.deliveryH} h</span>
@@ -736,8 +747,29 @@
           </div>
         </div>`;
       }).join("");
+      flashRef = null;
     };
     renderList();
+
+    // Pause / reprise du flux d'enchères
+    $("#liveToggle").addEventListener("click", () => { liveOn = !liveOn; $("#liveToggle").textContent = liveOn ? "⏸ Mettre en pause" : "▶ Reprendre"; });
+
+    // Moteur d'enchères automatique : une offre tombe toutes les ~4 s
+    let tick = 0;
+    timers.push(setInterval(() => {
+      if (!liveOn) return;
+      const open = DB.auctions.map((a, i) => ({ a, i })).filter((x) => x.a.status !== "Attribuée" && !remain(x.a.deadlineAt).over);
+      if (!open.length) return;
+      const { a, i } = open[Math.floor(Math.random() * open.length)];
+      const best = a.bids[0];
+      const newPrice = Math.max(Math.round(best.price * 0.7), best.price - Math.round(best.price * (0.02 + Math.random() * 0.05)));
+      if (newPrice >= best.price) return;
+      a.bids.unshift({ provider: pick2(), price: newPrice, deliveryH: Math.max(2, best.deliveryH - (Math.random() < 0.5 ? 1 : 0)), kind: Math.random() < 0.45 ? "Particulier" : "Concession" });
+      a.bids.sort((x, y) => x.price - y.price);
+      flashRef = i;
+      renderList();
+      if (++tick % 2 === 0) toast("Nouvelle enchère 🔻", `${a.need} (${a.city}) : ${euro(a.bids[0].price)} sous ${a.bids[0].deliveryH} h.`);
+    }, 4000));
 
     everySec(() => {
       $$("#aucList [data-deadline]").forEach((el) => {
@@ -752,22 +784,102 @@
     $("#aucList").addEventListener("click", (e) => {
       const bidBtn = e.target.closest("[data-bid]"), awBtn = e.target.closest("[data-award]");
       if (bidBtn) {
-        const a = DB.auctions[+bidBtn.dataset.bid];
+        const idx = +bidBtn.dataset.bid, a = DB.auctions[idx];
         const best = a.bids[0];
         const newPrice = Math.max(1, best.price - Math.round(best.price * 0.05));
         a.bids.unshift({ provider: pick2(), price: newPrice, deliveryH: Math.max(2, best.deliveryH - 1), kind: Math.random() < 0.5 ? "Particulier" : "Concession" });
         a.bids.sort((x, y) => x.price - y.price);
+        flashRef = idx;
         renderList();
         toast("Nouvelle enchère", `Meilleure offre : ${euro(a.bids[0].price)} sous ${a.bids[0].deliveryH} h.`);
       } else if (awBtn) {
         const a = DB.auctions[+awBtn.dataset.award];
         a.status = "Attribuée";
         renderList();
+        const oc = $("#aucOpen"); if (oc) oc.textContent = DB.auctions.filter((x) => x.status !== "Attribuée").length;
         toast("Enchère attribuée ✓", `${a.bids[0].provider} mobilisé pour ${a.need} — ${euro(a.bids[0].price)}.`);
       }
     });
   }
   const pick2 = () => ["AutoPro Île-de-France", "Particulier · M. Roux", "Flotte Express PL", "Particulier · S. Marin", "Nord Trucks"][Math.floor(Math.random() * 5)];
+
+  /* ================================================================
+     VUE — Carte temps réel
+     ================================================================ */
+  function renderLiveMap() {
+    const GEO = window.DeflectMatch.GEO;
+    const lonMin = -5, lonMax = 8.2, latMin = 42, latMax = 51.4, W = 120, H = 134, pad = 7;
+    const px = (lon) => pad + ((lon - lonMin) / (lonMax - lonMin)) * (W - 2 * pad);
+    const py = (lat) => pad + ((latMax - lat) / (latMax - latMin)) * (H - 2 * pad);
+    const P = (city) => { const g = GEO[city]; return g ? [px(g.lon), py(g.lat)] : null; };
+
+    // contour stylisé de l'Hexagone (projeté avec la même fonction)
+    const FR = [[51.05, 2.37], [50.9, 1.85], [49.5, 0.1], [49.7, -1.6], [48.4, -4.79], [47.3, -2.5], [46.4, -1.8], [45.0, -1.1], [43.4, -1.5], [42.5, 3.0], [43.3, 5.4], [43.7, 7.5], [45.9, 6.9], [47.5, 7.6], [48.6, 7.8], [49.2, 5.9], [50.0, 4.2]];
+    const frPath = FR.map(([la, lo], i) => `${i ? "L" : "M"}${px(lo).toFixed(1)} ${py(la).toFixed(1)}`).join(" ") + " Z";
+
+    const active = DB.claims.filter((c) => c.assigned && c.stage >= 2)
+      .map((c) => ({ c, d: DB.dealers.find((x) => x.name === c.assigned) }))
+      .filter((x) => x.d && P(x.c.city) && P(x.d.city));
+    const pending = DB.claims.filter((c) => c.stage < 2 && P(c.city));
+
+    // marqueurs concessions (uniques par ville)
+    const dealerCities = [...new Set(DB.dealers.map((d) => d.city))].filter((c) => P(c));
+    const dealerMk = dealerCities.map((c) => { const [x, y] = P(c); return `<g transform="translate(${x},${y})"><rect class="lm-dealer" x="-2.2" y="-2.2" width="4.4" height="4.4" rx="1.2"/><text class="lm-lbl" y="-4">${c}</text></g>`; }).join("");
+
+    const routes = active.map(({ c, d }, i) => {
+      const [x0, y0] = P(d.city), [x1, y1] = P(c.city);
+      const path = `M${x0} ${y0} L${x1} ${y1}`;
+      return `<path class="lm-route" d="${path}"/>
+        <circle class="lm-convoy" r="1.9"><animateMotion dur="${3 + (i % 3)}s" repeatCount="indefinite" path="${path}"/></circle>`;
+    }).join("");
+
+    const claimMk = active.map(({ c }) => { const [x, y] = P(c.city); return `<circle class="lm-claim" cx="${x}" cy="${y}" r="2.4"/>`; }).join("") +
+      pending.map((c) => { const [x, y] = P(c.city); return `<g transform="translate(${x},${y})"><circle class="lm-pending-halo" r="5"/><circle class="lm-pending" r="2.4"/></g>`; }).join("");
+
+    view.innerHTML = `
+      <div class="grid kpis">
+        ${kpi({ label: "Livraisons en transit", value: active.length, delta: "convoyage en cours", up: true, icon: "◎" })}
+        ${kpi({ label: "Sinistres en attente", value: pending.length, delta: "à débloquer", up: true, icon: "◈" })}
+        ${kpi({ label: "Concessions actives", value: dealerCities.length + " villes", delta: "réseau de sourcing", up: true, icon: "▤" })}
+        ${kpi({ label: "Délai moyen restant", value: "—", delta: "live", up: true, icon: "⚡" })}
+      </div>
+      <div class="grid" style="grid-template-columns:1.25fr 1fr">
+        <div class="card card--pad">
+          <div class="card__head"><h3>Flux temps réel</h3><span class="pill pill--live"><i></i>En direct</span></div>
+          <div class="map-wrap" style="height:420px">
+            <svg viewBox="0 0 ${W} ${H}" class="map-svg" preserveAspectRatio="xMidYMid meet">
+              <path class="map-fr" d="${frPath}"/>
+              ${routes}${dealerMk}${claimMk}
+            </svg>
+          </div>
+          <div class="legend"><span><i style="background:var(--gold)"></i>Concession</span><span><i style="background:var(--green)"></i>Livraison en transit</span><span><i style="background:var(--red)"></i>Sinistre en attente</span></div>
+        </div>
+        <div class="card card--pad">
+          <div class="card__head"><h3>Livraisons en cours</h3><span class="sub">ETA en direct</span></div>
+          <div id="lmList" style="display:flex;flex-direction:column;gap:.6rem"></div>
+        </div>
+      </div>`;
+    sparkAll();
+
+    const list = active.map(({ c, d }) => ({ c, d, deadline: c.declaredAt + (c.unlockedInH || 6) * 3600e3 }));
+    $("#lmList").innerHTML = list.length ? list.map(({ c, d, deadline }) => `
+      <div class="lm-row">
+        <div>${typeBadge(c.needType)}<div class="lm-row__main"><b>${c.ref} · ${c.city}</b><span>${d.name} → ${c.city} · ${c.insurer}</span></div></div>
+        <div class="countdown" data-deadline="${deadline}" data-lm style="text-align:right"></div>
+      </div>`).join("") : `<p style="color:var(--muted)">Aucune livraison en transit. Débloquez un sinistre pour la voir apparaître ici.</p>`;
+
+    everySec(() => {
+      let minH = Infinity;
+      $$("#lmList [data-lm]").forEach((el) => {
+        const r = remain(+el.dataset.deadline);
+        el.className = "countdown " + (r.over ? "ok" : r.cls); el.style.textAlign = "right";
+        el.innerHTML = r.over ? "Livré ✓<small>SLA respecté</small>" : r.txt + "<small>ETA livraison</small>";
+        if (!r.over) { const h = (+el.dataset.deadline - Date.now()) / 3600e3; if (h < minH) minH = h; }
+      });
+      const kEl = $$(".kpi__val")[3];
+      if (kEl) kEl.textContent = minH === Infinity ? "—" : Math.max(0, Math.round(minH)) + " h";
+    });
+  }
 
   /* ================================================================
      VUE — Rapport assureur
