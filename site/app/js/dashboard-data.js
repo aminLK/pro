@@ -106,6 +106,111 @@
   ];
   const lossRatioSeries = months.map((_, i) => Math.max(28, lossRatio + Math.round((rnd() - 0.5) * 24) - i * 0.6));
 
+  /* ================================================================
+     DeflectNumera — sourcing, sinistres, particuliers, enchères
+     ================================================================ */
+  const now = Date.now();
+  const energies = ["Électrique", "Hybride", "Diesel", "Essence"];
+  const plModels = ["Renault T High", "Mercedes Actros", "Volvo FH", "Iveco S-Way", "Scania R450"];
+  const vulModels = ["Renault Master", "Iveco Daily", "Fiat Ducato", "Mercedes Sprinter"];
+
+  /* ---- Concessionnaires (pool de sourcing) ---- */
+  const dealerNames = ["AutoPro Île-de-France", "TruckCenter Rhône", "Méditerranée VL/PL", "Sud-Ouest Mobilité", "Nord Trucks", "Riviera Auto"];
+  const dealers = dealerNames.map((name, i) => {
+    const stock = [];
+    for (let k = 0; k < ri(3, 5); k++) {
+      const type = pick(["VL", "VL", "PL"]);
+      stock.push({
+        type, energy: pick(energies),
+        model: type === "PL" ? pick(plModels) : (rnd() < 0.5 ? pick(vulModels) : pick(models).model),
+        qty: ri(1, 6), deliveryH: ri(3, 36),
+      });
+    }
+    return {
+      id: "CC-" + (200 + i), name, city: cities[i % cities.length], stock,
+      available: stock.reduce((s, x) => s + x.qty, 0),
+      avgDeliveryH: Math.round(stock.reduce((s, x) => s + x.deliveryH, 0) / stock.length),
+      rating: +(4.3 + rnd() * 0.6).toFixed(1),
+    };
+  });
+
+  /* ---- Sinistres (claims) — pipeline de déblocage ---- */
+  const insurers = ["AXA", "Allianz", "Groupama", "MAIF", "Generali", "MACIF"];
+  const claimStages = ["Déclaré", "Solution identifiée", "Débloqué", "Livré"];
+  const reasons = ["Collision", "Bris de glace majeur", "Vol", "Incendie", "Panne immobilisante"];
+  const claims = [];
+  for (let i = 0; i < 11; i++) {
+    const type = pick(["VL", "VL", "VL", "PL"]);
+    const sla = pick([24, 24, 48]);
+    const declaredAgoH = ri(1, sla - 1);
+    const stage = ri(0, 3);
+    claims.push({
+      ref: "SIN-" + (70000 + ri(100, 999)),
+      insurer: pick(insurers),
+      client: `${pick(firstNames)} ${pick(lastNames)}`,
+      city: pick(cities),
+      needType: type,
+      energy: pick(energies),
+      reason: pick(reasons),
+      declaredAt: now - declaredAgoH * 3600e3,
+      slaHours: sla,
+      stage,
+      status: claimStages[stage],
+      assigned: stage >= 2 ? pick(dealers).name : null,
+      unlockedInH: stage >= 2 ? ri(4, sla - 2) : null,
+      covered: rnd() < 0.82,
+    });
+  }
+
+  /* ---- Particuliers offreurs ---- */
+  const providers = [];
+  for (let i = 0; i < 8; i++) {
+    const type = pick(["VL", "VL", "PL"]);
+    providers.push({
+      name: `${pick(firstNames)} ${pick(lastNames)}`,
+      city: pick(cities), type, energy: pick(energies),
+      model: type === "PL" ? pick(vulModels) : pick(models).model,
+      status: rnd() < 0.5 ? "Disponible" : "En mission",
+      missions: ri(0, 14),
+      earnings: ri(180, 2600),
+      rating: +(4 + rnd()).toFixed(1),
+    });
+  }
+
+  /* ---- Marketplace inversé : enchères urgentes ---- */
+  const bidders = dealerNames.concat(["Particulier · K. Hamdi", "Particulier · L. Petit", "Flotte Express PL"]);
+  const auctions = [];
+  for (let i = 0; i < 5; i++) {
+    const type = pick(["VL", "PL", "PL"]);
+    const need = type === "PL"
+      ? pick(["PL frigorifique 19T", "Tracteur routier 44T", "Fourgon 20m³", "Benne TP 8x4"])
+      : pick(["Berline 5 places", "SUV 7 places", "Citadine électrique", "Utilitaire L2H2"]);
+    const deadlineH = pick([6, 12, 24]);
+    const budget = type === "PL" ? ri(280, 520) : ri(90, 210);
+    const bids = [];
+    for (let b = 0; b < ri(2, 5); b++) {
+      bids.push({
+        provider: pick(bidders),
+        price: budget - ri(0, type === "PL" ? 120 : 60),
+        deliveryH: ri(2, deadlineH),
+        kind: rnd() < 0.4 ? "Particulier" : "Concession",
+      });
+    }
+    bids.sort((a, b) => a.price - b.price);
+    auctions.push({
+      ref: "ENC-" + (900 + i), need, type, energy: pick(energies),
+      city: pick(cities), insurer: pick(insurers),
+      deadlineAt: now + deadlineH * 3600e3,
+      budgetMax: budget + (type === "PL" ? 40 : 20),
+      bids, status: i === 0 ? "Attribuée" : "Ouverte",
+    });
+  }
+
+  /* ---- KPIs sinistres ---- */
+  const unlocked = claims.filter((c) => c.stage >= 2);
+  const avgUnlockH = Math.round(unlocked.reduce((s, c) => s + (c.unlockedInH || 0), 0) / (unlocked.length || 1));
+  const under24 = Math.round((unlocked.filter((c) => (c.unlockedInH || 99) <= 24).length / (unlocked.length || 1)) * 100);
+
   window.VELORAH_DB = {
     months, fleet, bookings, cities, models, statusList,
     series: { revenue, utilization: utilizationSeries, bookings: bookingsSeries, lossRatio: lossRatioSeries },
@@ -114,5 +219,7 @@
       avgDriverScore, avgRisk, premiumDiscountPct, claimsByType,
       estimatedSaving: Math.round((premiumAnnual * premiumDiscountPct) / 100),
     },
+    dealers, claims, providers, auctions, insurers, energies, claimStages,
+    ops: { avgUnlockH, under24, openClaims: claims.filter((c) => c.stage < 3).length, dealerStock: dealers.reduce((s, d) => s + d.available, 0) },
   };
 })();

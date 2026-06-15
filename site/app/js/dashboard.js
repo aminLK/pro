@@ -17,17 +17,40 @@
   /* ---------- Navigation ---------- */
   const view = $("#view");
   const titles = {
-    overview: ["Tableau de bord", "Vue d'ensemble de l'activité — 12 derniers mois"],
-    fleet: ["Flotte", "120 véhicules · valeur, occupation et score de risque"],
-    bookings: ["Réservations", "Locations confirmées, en cours et terminées"],
+    overview: ["Tableau de bord", "Pilotage temps réel : sinistres, sourcing et SLA 24/48 h"],
+    dealers: ["Concessionnaires", "Pool de sourcing VL / PL — stock et délais de mise à dispo"],
+    fleet: ["Flotte & tracking", "120 véhicules · kilométrage, occupation et score de risque"],
+    claims: ["Sinistres · déblocage en 1 clic", "Identifiez et débloquez un véhicule de remplacement en < 24 h"],
     insurance: ["Assurance & Risque", "Sinistralité, scoring télématique et prime estimée"],
     simulator: ["Simulateur de prime", "Ajustez les paramètres, la prime se recalcule en direct"],
+    providers: ["Véhicules à disposition", "Particuliers mettant leur véhicule au service des assurances"],
+    auctions: ["Marketplace inversé — enchères urgentes", "Le besoin est posté, les fournisseurs enchérissent"],
+    bookings: ["Réservations", "Locations confirmées, en cours et terminées"],
     map: ["Carte d'activité", "Flotte, réservations et sinistres par ville"],
     report: ["Rapport assureur", "Synthèse prête à présenter à votre compagnie"],
   };
-  const views = { overview: renderOverview, fleet: renderFleet, bookings: renderBookings, insurance: renderInsurance, simulator: renderSimulator, map: renderMap, report: renderReport };
+  const views = { overview: renderOverview, dealers: renderDealers, fleet: renderFleet, claims: renderClaims, insurance: renderInsurance, simulator: renderSimulator, providers: renderProviders, auctions: renderAuctions, bookings: renderBookings, map: renderMap, report: renderReport };
+
+  /* ---------- Timers (compte à rebours live) ---------- */
+  let timers = [];
+  const clearTimers = () => { timers.forEach(clearInterval); timers = []; };
+  const everySec = (fn) => { fn(); timers.push(setInterval(fn, 1000)); };
+  function remain(targetMs) {
+    const d = targetMs - Date.now();
+    if (d <= 0) return { txt: "Échéance dépassée", cls: "crit", over: true };
+    const h = Math.floor(d / 3600e3), m = Math.floor((d % 3600e3) / 60e3), s = Math.floor((d % 60e3) / 1000);
+    return { txt: `${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`, cls: h < 3 ? "crit" : h < 8 ? "warn" : "ok", over: false };
+  }
+
+  /* ---------- Modale générique ---------- */
+  const dnModal = $("#dnModal"), dnBody = $("#dnModalBody");
+  function openModal(html) { dnBody.innerHTML = `<div class="mbody">${html}</div>`; dnModal.classList.add("open"); dnModal.setAttribute("aria-hidden", "false"); document.body.style.overflow = "hidden"; }
+  function closeModal() { dnModal.classList.remove("open"); dnModal.setAttribute("aria-hidden", "true"); document.body.style.overflow = ""; }
+  dnModal.addEventListener("click", (e) => { if (e.target.matches("[data-close]")) closeModal(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && dnModal.classList.contains("open")) closeModal(); });
 
   function go(name) {
+    clearTimers();
     $$(".side-link").forEach((b) => b.classList.toggle("is-active", b.dataset.view === name));
     $("#viewTitle").textContent = titles[name][0];
     $("#viewSub").textContent = titles[name][1];
@@ -84,12 +107,13 @@
     const active = DB.fleet.filter((v) => v.status === "En location").length;
     const avgUtil = Math.round(s.utilization.reduce((a, b) => a + b, 0) / s.utilization.length);
 
+    const ops = DB.ops;
     view.innerHTML = `
       <div class="grid kpis">
-        ${kpi({ label: "Chiffre d'affaires (12 mois)", value: eur1(revTotal), delta: "+18,4% vs N-1", up: true, icon: "€" })}
-        ${kpi({ label: "Taux d'occupation flotte", value: avgUtil + " %", delta: "+5,2 pts", up: true, icon: "◴" })}
-        ${kpi({ label: "Locations actives", value: num(active), delta: "+12 aujourd'hui", up: true, icon: "▤" })}
-        ${kpi({ label: "Ratio sinistres / primes", value: ins.lossRatio + " %", delta: "-6,1 pts", up: true, icon: "◈" })}
+        ${kpi({ label: "Sinistres ouverts", value: num(ops.openClaims), delta: "déblocage en cours", up: true, icon: "◈" })}
+        ${kpi({ label: "Délai moyen de déblocage", value: ops.avgUnlockH + " h", delta: "objectif < 24 h", up: true, icon: "⚡" })}
+        ${kpi({ label: "Sinistres résolus < 24 h", value: ops.under24 + " %", delta: "+9 pts", up: true, icon: "✓" })}
+        ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock) + " + flotte", delta: "VL & PL · multi-énergie", up: true, icon: "▤" })}
       </div>
 
       <div class="grid" style="grid-template-columns:1.6fr 1fr">
@@ -227,7 +251,7 @@
       <div class="ins-hero">
         <div class="ins-banner">
           <h2>Économie de prime estimée grâce à la télématique</h2>
-          <p>Velorah équipe 100% de sa flotte de capteurs de conduite. Le scoring comportemental
+          <p>DeflectNumera équipe 100% de sa flotte de capteurs de conduite. Le scoring comportemental
              permet de négocier une prime indexée sur le risque réel — pas sur une moyenne de marché.</p>
           <div class="ins-figure"><b>${euro(ins.estimatedSaving)}</b><span>/ an &nbsp;·&nbsp; soit -${ins.premiumDiscountPct}% sur la prime</span></div>
           <div class="callout" style="margin-top:18px"><span>✓</span><div><b>Argument assureur :</b> un ratio S/P de ${ins.lossRatio}% (sous la barre des 70%) et un score conducteur moyen de ${ins.avgDriverScore}/100 placent la flotte dans le meilleur quartile de risque.</div></div>
@@ -425,6 +449,220 @@
   }
 
   /* ================================================================
+     VUE — Sinistres · déblocage en 1 clic  (★ cœur DeflectNumera)
+     ================================================================ */
+  const typeBadge = (t) => `<span class="type-badge type-${t}">${t}</span>`;
+  function stepper(stage) {
+    const labels = DB.claimStages;
+    let html = '<div class="stepper">';
+    for (let i = 0; i < labels.length; i++) {
+      const cls = i < stage ? "done" : i === stage ? "cur" : "";
+      html += `<span class="dot ${cls}"></span>`;
+      if (i < labels.length - 1) html += `<span class="seg ${i < stage ? "done" : ""}"></span>`;
+    }
+    html += '</div><div class="steplabels">' + labels.map((l) => `<span>${l}</span>`).join("") + "</div>";
+    return html;
+  }
+
+  function renderClaims() {
+    const ops = DB.ops;
+    const head = `
+      <div class="grid kpis">
+        ${kpi({ label: "Sinistres ouverts", value: num(DB.claims.filter((c) => c.stage < 3).length), delta: "à traiter", up: true, icon: "◈" })}
+        ${kpi({ label: "Délai moyen", value: ops.avgUnlockH + " h", delta: "< 24 h visé", up: true, icon: "⚡" })}
+        ${kpi({ label: "Résolus < 24 h", value: ops.under24 + " %", delta: "SLA", up: true, icon: "✓" })}
+        ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock), delta: "stock concession", up: true, icon: "▤" })}
+      </div>`;
+
+    view.innerHTML = head + `<div class="grid" id="claimList" style="gap:14px"></div>`;
+    sparkAll();
+
+    const renderList = () => {
+      $("#claimList").innerHTML = DB.claims.map((c, i) => {
+        const deadline = c.declaredAt + c.slaHours * 3600e3;
+        const r = remain(deadline);
+        const done = c.stage >= 2;
+        const action = done
+          ? `<div style="text-align:right"><div class="tag tag--green">Débloqué</div><div class="meta" style="color:var(--muted);font-size:.78rem;margin-top:.3rem">via ${c.assigned}</div></div>`
+          : `<button class="btn btn--gold" data-unlock="${i}">⚡ Débloquer en 1 clic</button>`;
+        return `<div class="claim">
+          <div class="claim__head">
+            <b>${c.ref} · ${c.reason}</b>
+            <div class="meta">${c.insurer} — ${c.client} · ${c.city} ${c.covered ? "" : "· <span style='color:var(--gold-2)'>non couvert</span>"}</div>
+            ${stepper(c.stage)}
+          </div>
+          <div class="claim__need">${typeBadge(c.needType)}<span class="tag tag--muted">${c.energy}</span><span class="tag tag--muted">SLA ${c.slaHours} h</span></div>
+          <div class="countdown ${r.cls}" data-deadline="${deadline}">${r.txt}<small>temps restant SLA</small></div>
+          <div>${action}</div>
+        </div>`;
+      }).join("");
+    };
+    renderList();
+
+    // compte à rebours live
+    everySec(() => {
+      $$("[data-deadline]").forEach((el) => {
+        const r = remain(+el.dataset.deadline);
+        el.className = "countdown " + r.cls;
+        el.innerHTML = r.txt + "<small>temps restant SLA</small>";
+      });
+    });
+
+    // déblocage en 1 clic -> propose les véhicules sourcés
+    $("#claimList").addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-unlock]");
+      if (!btn) return;
+      const claim = DB.claims[+btn.dataset.unlock];
+      openUnlock(claim, +btn.dataset.unlock, renderList);
+    });
+  }
+
+  function openUnlock(claim, idx, refresh) {
+    // matching : stock concessionnaire du bon type, le plus rapide d'abord
+    const matches = [];
+    DB.dealers.forEach((d) => d.stock.forEach((s) => {
+      if (s.type === claim.needType) matches.push({ dealer: d, ...s });
+    }));
+    matches.sort((a, b) => a.deliveryH - b.deliveryH);
+    const top = matches.slice(0, 5);
+
+    openModal(`
+      <h3>Débloquer une solution — ${claim.ref}</h3>
+      <p class="msub">Besoin : ${typeBadge(claim.needType)} ${claim.energy} · ${claim.city} · ${claim.insurer}. Véhicules disponibles, du plus rapide au plus lent :</p>
+      ${top.map((m, i) => `
+        <div class="match" data-pick="${i}">
+          <span class="type-badge type-${m.type}">${m.type}</span>
+          <div class="match__main"><b>${m.model}</b><span>${m.dealer.name} · ${m.dealer.city} · ${m.energy} · ${m.qty} dispo</span></div>
+          <div class="match__eta">sous<br><b>${m.deliveryH} h</b></div>
+        </div>`).join("")}
+      <p class="msub" style="margin:1rem 0 0">Sélectionnez un véhicule : la solution est débloquée et le concessionnaire mobilisé de bout en bout.</p>
+    `);
+
+    dnBody.querySelectorAll("[data-pick]").forEach((el) => el.addEventListener("click", () => {
+      const m = top[+el.dataset.pick];
+      claim.stage = 2; claim.status = "Débloqué"; claim.assigned = m.dealer.name; claim.unlockedInH = m.deliveryH;
+      closeModal();
+      refresh();
+      toast("Solution débloquée ⚡", `${m.model} mobilisé chez ${m.dealer.name} — livraison sous ${m.deliveryH} h. SLA respecté.`);
+    }));
+  }
+
+  /* ================================================================
+     VUE — Concessionnaires (sourcing)
+     ================================================================ */
+  function renderDealers() {
+    view.innerHTML = `
+      <div class="grid kpis">
+        ${kpi({ label: "Concessionnaires partenaires", value: DB.dealers.length, delta: "réseau actif", up: true, icon: "▤" })}
+        ${kpi({ label: "Véhicules mobilisables", value: num(DB.ops.dealerStock), delta: "VL & PL", up: true, icon: "▥" })}
+        ${kpi({ label: "Délai moyen de mise à dispo", value: Math.round(DB.dealers.reduce((s, d) => s + d.avgDeliveryH, 0) / DB.dealers.length) + " h", delta: "objectif < 24 h", up: true, icon: "⚡" })}
+        ${kpi({ label: "Couverture nationale", value: DB.cities.length + " villes", delta: "multi-énergie", up: true, icon: "◉" })}
+      </div>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(320px,1fr))">
+        ${DB.dealers.map((d) => `
+          <div class="card">
+            <div class="card__head"><h3>${d.name}</h3><span class="tag tag--gold">★ ${d.rating}</span></div>
+            <div class="meta" style="color:var(--muted);font-size:.85rem;margin-bottom:.8rem">${d.city} · ${d.available} véhicules · délai moyen ${d.avgDeliveryH} h</div>
+            ${d.stock.map((s) => `<div class="bid"><div class="bid__who">${typeBadge(s.type)} <span>${s.model}</span></div><span class="bid__delivery">${s.energy} ×${s.qty}</span><span class="bid__price" style="font-size:.85rem;color:var(--gold-2)">${s.deliveryH} h</span></div>`).join("")}
+          </div>`).join("")}
+      </div>`;
+    sparkAll();
+  }
+
+  /* ================================================================
+     VUE — Particuliers (véhicules à disposition)
+     ================================================================ */
+  function renderProviders() {
+    const totalEarn = DB.providers.reduce((s, p) => s + p.earnings, 0);
+    const dispo = DB.providers.filter((p) => p.status === "Disponible").length;
+    view.innerHTML = `
+      <div class="callout" style="background:var(--gold-soft);border-color:rgba(200,164,92,.3)"><span>◐</span><div><b>Particuliers</b> — mettez votre véhicule au service des assurances pendant un sinistre, et soyez rémunéré. Les équipes le réservent, le marketplace inversé fixe le prix.</div></div>
+      <div class="grid kpis">
+        ${kpi({ label: "Véhicules proposés", value: DB.providers.length, delta: dispo + " disponibles", up: true, icon: "◐" })}
+        ${kpi({ label: "Revenus reversés", value: euro(totalEarn), delta: "aux particuliers", up: true, icon: "€" })}
+        ${kpi({ label: "Note moyenne", value: (DB.providers.reduce((s, p) => s + +p.rating, 0) / DB.providers.length).toFixed(1) + " / 5", delta: "satisfaction", up: true, icon: "★" })}
+        ${kpi({ label: "Missions réalisées", value: num(DB.providers.reduce((s, p) => s + p.missions, 0)), delta: "cumulées", up: true, icon: "✓" })}
+      </div>
+      <div class="card card--pad">
+        <div class="table-wrap"><table>
+          <thead><tr><th>Particulier</th><th>Véhicule</th><th>Ville</th><th>Statut</th><th>Missions</th><th>Note</th><th>Revenus</th></tr></thead>
+          <tbody>${DB.providers.map((p) => `
+            <tr><td class="cell-strong">${p.name}</td>
+            <td>${typeBadge(p.type)} ${p.model} <span class="mono" style="font-size:.78rem">· ${p.energy}</span></td>
+            <td>${p.city}</td><td>${statusTag(p.status === "Disponible" ? "Disponible" : "En cours")}</td>
+            <td>${p.missions}</td><td>★ ${p.rating}</td><td class="mono cell-strong">${euro(p.earnings)}</td></tr>`).join("")}</tbody>
+        </table></div>
+      </div>`;
+    sparkAll();
+  }
+
+  /* ================================================================
+     VUE — Marketplace inversé (enchères urgentes)
+     ================================================================ */
+  function renderAuctions() {
+    view.innerHTML = `
+      <div class="callout" style="background:rgba(106,166,255,.12);border-color:rgba(106,166,255,.3)"><span>⟳</span><div><b>Enchères inversées</b> — un assureur poste un besoin urgent. Concessionnaires et particuliers proposent prix + délai ; la meilleure offre l'emporte avant l'échéance.</div></div>
+      <div class="grid" id="aucList" style="grid-template-columns:repeat(auto-fill,minmax(380px,1fr))"></div>`;
+
+    const renderList = () => {
+      $("#aucList").innerHTML = DB.auctions.map((a, ai) => {
+        const r = remain(a.deadlineAt);
+        const best = a.bids[0];
+        const closed = a.status === "Attribuée" || r.over;
+        return `<div class="auction">
+          <div class="auction__top">
+            <div><div class="auction__need">${typeBadge(a.type)} ${a.need}</div><div class="auction__meta">${a.ref} · ${a.insurer} · ${a.city} · ${a.energy} · budget max ${euro(a.budgetMax)}</div></div>
+            <div class="countdown ${closed ? "" : r.cls}" data-deadline="${a.deadlineAt}" style="text-align:right">${closed ? "Clôturée" : r.txt}<small>${closed ? "attribuée" : "avant clôture"}</small></div>
+          </div>
+          <div class="auction__bids">
+            ${a.bids.map((b, bi) => `
+              <div class="bid ${bi === 0 ? "best" : ""}">
+                <div class="bid__who">${b.kind === "Particulier" ? "<span class='tag tag--muted'>Particulier</span>" : "<span class='tag tag--gold'>Concession</span>"} <span>${b.provider}</span></div>
+                <span class="bid__delivery">sous ${b.deliveryH} h</span>
+                <span class="bid__price" style="${bi === 0 ? "color:var(--green)" : ""}">${euro(b.price)}</span>
+              </div>`).join("")}
+          </div>
+          <div class="auction__foot">
+            ${closed
+              ? `<span class="tag tag--green">Attribuée à ${best.provider} · ${euro(best.price)}</span>`
+              : `<button class="btn btn--ghost" data-bid="${ai}">Enchérir</button><button class="btn btn--gold" data-award="${ai}">Attribuer au meilleur</button>`}
+          </div>
+        </div>`;
+      }).join("");
+    };
+    renderList();
+
+    everySec(() => {
+      $$("#aucList [data-deadline]").forEach((el) => {
+        const a = DB.auctions.find((x) => x.deadlineAt == el.dataset.deadline);
+        if (!a || a.status === "Attribuée") return;
+        const r = remain(+el.dataset.deadline);
+        el.className = "countdown " + r.cls; el.style.textAlign = "right";
+        el.innerHTML = (r.over ? "Clôturée" : r.txt) + `<small>${r.over ? "attribuée" : "avant clôture"}</small>`;
+      });
+    });
+
+    $("#aucList").addEventListener("click", (e) => {
+      const bidBtn = e.target.closest("[data-bid]"), awBtn = e.target.closest("[data-award]");
+      if (bidBtn) {
+        const a = DB.auctions[+bidBtn.dataset.bid];
+        const best = a.bids[0];
+        const newPrice = Math.max(1, best.price - Math.round(best.price * 0.05));
+        a.bids.unshift({ provider: pick2(), price: newPrice, deliveryH: Math.max(2, best.deliveryH - 1), kind: Math.random() < 0.5 ? "Particulier" : "Concession" });
+        a.bids.sort((x, y) => x.price - y.price);
+        renderList();
+        toast("Nouvelle enchère", `Meilleure offre : ${euro(a.bids[0].price)} sous ${a.bids[0].deliveryH} h.`);
+      } else if (awBtn) {
+        const a = DB.auctions[+awBtn.dataset.award];
+        a.status = "Attribuée";
+        renderList();
+        toast("Enchère attribuée ✓", `${a.bids[0].provider} mobilisé pour ${a.need} — ${euro(a.bids[0].price)}.`);
+      }
+    });
+  }
+  const pick2 = () => ["AutoPro Île-de-France", "Particulier · M. Roux", "Flotte Express PL", "Particulier · S. Marin", "Nord Trucks"][Math.floor(Math.random() * 5)];
+
+  /* ================================================================
      VUE — Rapport assureur
      ================================================================ */
   function renderReport() {
@@ -432,7 +670,7 @@
     view.innerHTML = `
       <div class="report">
         <div class="report__head">
-          <div><span class="brand__name">VELORAH<small>Pro</small></span><div class="report p" style="margin-top:.4rem;color:var(--muted)">Dossier de souscription flotte · ${today}</div></div>
+          <div><span class="brand__name">DeflectNumera</span><div class="report p" style="margin-top:.4rem;color:var(--muted)">Dossier de souscription flotte · ${today}</div></div>
           <button class="btn btn--gold" id="dlReport">Télécharger le PDF</button>
         </div>
 
@@ -459,11 +697,11 @@
 
         <h2>4. Proposition</h2>
         <p>Sur la base d'un ratio S/P maîtrisé et d'un scoring conducteur supérieur à la moyenne,
-           Velorah sollicite une <strong style="color:var(--text)">prime indexée sur le risque réel</strong>.</p>
+           DeflectNumera sollicite une <strong style="color:var(--text)">prime indexée sur le risque réel</strong>.</p>
         <div class="stat-line"><span>Réduction de prime demandée</span><b style="color:var(--gold-2)">-${ins.premiumDiscountPct}%</b></div>
         <div class="stat-line"><span>Économie annuelle estimée</span><b style="color:var(--gold-2)">${euro(ins.estimatedSaving)}</b></div>
 
-        <p class="report__sig">Document généré automatiquement par Velorah Pro à partir des données d'exploitation et de télématique. Chiffres de démonstration.</p>
+        <p class="report__sig">Document généré automatiquement par DeflectNumera à partir des données d'exploitation et de télématique. Chiffres de démonstration.</p>
       </div>`;
     $("#dlReport").addEventListener("click", () => { window.print && toast("PDF prêt", "Utilisez la boîte d'impression pour enregistrer en PDF."); setTimeout(() => window.print(), 300); });
   }

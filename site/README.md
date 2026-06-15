@@ -1,9 +1,21 @@
-# Velorah — Site de location de voitures premium
+# DeflectNumera — Mobilité de remplacement en moins de 24 h
 
-Site dynamique de location de véhicules haut de gamme (marque **Velorah**).
+Plateforme qui connecte **assurances, concessionnaires et particuliers** pour
+**débloquer un véhicule de remplacement en moins de 24-48 h** lors d'un sinistre —
+VL ou PL, électrique ou thermique, toutes gammes. Tracking du **kilomètre**, du
+**produit** et du **sinistre**, de la déclaration à la restitution.
+
 HTML / CSS / JavaScript natif — aucune dépendance, aucun build.
 
-## ✨ Fonctionnalités
+## 🧭 Les 3 espaces
+
+- **🛡 Assurance** — déclarer un sinistre et **débloquer une solution en 1 clic**,
+  avec sourcing automatique chez les concessionnaires et **compte à rebours SLA** 24/48 h.
+- **👤 Particuliers** — mettre son véhicule à disposition des assurances et être rémunéré.
+- **🔁 Marketplace inversé** — **enchères urgentes** : un besoin est posté, concessionnaires
+  et particuliers enchérissent (prix + délai), la meilleure offre l'emporte avant l'échéance.
+
+## ✨ Site vitrine (`site/`)
 
 - **Flotte filtrable** par catégorie (citadine, berline, SUV, sportive, luxe, électrique).
 - **Moteur de réservation** : modale par véhicule, sélection des dates, choix du niveau
@@ -32,11 +44,15 @@ Puis ouvrez http://localhost:8080
 
 ## 🏢 Espace Pro — Cockpit SaaS (`site/app/`)
 
-Un véritable back-office de gestion de flotte, pensé pour un **pitch aux assureurs**.
-Accessible depuis le lien « Espace Pro » du site, ou directement sur `app/index.html`.
+Le cockpit qui orchestre toute la plateforme, pensé pour la **démonstration aux assureurs**.
+Accessible via « Espace Pro » du site, ou directement sur `app/login.html`.
 
-- **Tableau de bord** : CA mensuel, taux d'occupation, locations actives, ratio S/P — graphiques animés (canvas, sans dépendance).
-- **Flotte** : 120 véhicules, recherche + filtres (catégorie, statut), occupation et **score de risque** par véhicule.
+- **Tableau de bord** : sinistres ouverts, **délai moyen de déblocage**, % résolus < 24 h, véhicules mobilisables — graphiques animés (canvas, sans dépendance).
+- **Sinistres · 1 clic** ★ : pipeline par sinistre (Déclaré → Solution identifiée → Débloqué → Livré), **compte à rebours SLA live**, et **déblocage en 1 clic** qui propose le stock concessionnaire le plus rapide.
+- **Concessionnaires** : pool de sourcing VL / PL, stock par énergie et délais de mise à disposition.
+- **Véhicules à dispo** : espace particuliers (revenus reversés, notes, missions).
+- **Enchères urgentes** ★ : marketplace inversé — besoins postés, offres prix + délai, meilleure offre surlignée, attribution.
+- **Flotte & tracking** : 120 véhicules, recherche + filtres, kilométrage, occupation et **score de risque**.
 - **Réservations** : suivi des locations (confirmée / en cours / terminée), recherche et filtres.
 - **Assurance & Risque** ★ : la pièce maîtresse — sinistralité, ratio S/P, scoring **télématique**
   de conduite, jauge de risque flotte, véhicules à surveiller et **économie de prime estimée**.

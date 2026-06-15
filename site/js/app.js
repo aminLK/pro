@@ -277,7 +277,7 @@
     const name = contactForm.name.value.trim().split(" ")[0] || "";
     contactForm.reset();
     contactMsg.hidden = false;
-    contactMsg.textContent = `Merci ${name} ! Un conseiller Velorah vous rappelle sous 1 heure.`;
+    contactMsg.textContent = `Merci ${name} ! Un conseiller DeflectNumera vous rappelle sous 1 heure.`;
   });
 
   /* -------------------------------------------------- Année footer */

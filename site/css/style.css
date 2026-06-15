@@ -87,7 +87,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   background: linear-gradient(135deg, var(--gold-2), var(--gold));
   color: #1a1407; font-family: "Sora"; font-weight: 800; font-size: 1.15rem;
 }
-.brand__name { font-size: 1.15rem; letter-spacing: .14em; }
+.brand__name { font-size: 1.1rem; letter-spacing: .02em; }
 
 .nav { display: flex; align-items: center; gap: 1.9rem; }
 .nav__link { color: var(--muted); font-size: .94rem; font-weight: 500; transition: color .2s; position: relative; }
