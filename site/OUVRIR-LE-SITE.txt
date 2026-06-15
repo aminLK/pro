@@ -1,0 +1,9 @@
+FLEET NAVIRA — Comment ouvrir le site (aucune installation)
+
+1. Décompressez ce dossier.
+2. Double-cliquez sur le fichier  index.html  → le site s'ouvre dans votre navigateur.
+3. Pour l'Espace Pro (cockpit) : menu « Espace Pro », ou ouvrez  app/login.html
+   puis cliquez « Accéder » (identifiants déjà pré-remplis).
+
+Tout fonctionne hors-ligne. Aucune connexion ni serveur requis.
+Navigateurs recommandés : Chrome, Edge, Firefox.
