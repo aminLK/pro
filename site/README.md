@@ -30,15 +30,37 @@ Puis ouvrez http://localhost:8080
 
 > Vous pouvez aussi ouvrir directement `site/index.html` dans le navigateur.
 
+## 🏢 Espace Pro — Cockpit SaaS (`site/app/`)
+
+Un véritable back-office de gestion de flotte, pensé pour un **pitch aux assureurs**.
+Accessible depuis le lien « Espace Pro » du site, ou directement sur `app/index.html`.
+
+- **Tableau de bord** : CA mensuel, taux d'occupation, locations actives, ratio S/P — graphiques animés (canvas, sans dépendance).
+- **Flotte** : 120 véhicules, recherche + filtres (catégorie, statut), occupation et **score de risque** par véhicule.
+- **Réservations** : suivi des locations (confirmée / en cours / terminée), recherche et filtres.
+- **Assurance & Risque** ★ : la pièce maîtresse — sinistralité, ratio S/P, scoring **télématique**
+  de conduite, jauge de risque flotte, véhicules à surveiller et **économie de prime estimée**.
+- **Rapport assureur** : dossier de souscription auto-généré, exportable en PDF (impression navigateur).
+
+Moteur de graphiques maison (`app/js/charts.js`) : courbes, barres, donut, jauge, sparkline —
+haute résolution (devicePixelRatio), animés, responsive, **zéro CDN**.
+
 ## 📁 Structure
 
 ```
 site/
-├── index.html        # Structure de la page
-├── css/style.css     # Design system + composants
-└── js/
-    ├── data.js       # Données de la flotte + options d'assurance
-    └── app.js        # Logique : filtres, modale, calcul de prix, validation
+├── index.html              # Site vitrine
+├── css/style.css           # Design system vitrine
+├── js/
+│   ├── data.js             # Flotte + options d'assurance
+│   └── app.js              # Filtres, modale, calcul de prix, validation
+└── app/                    # ── Espace Pro (SaaS) ──
+    ├── index.html          # Shell du back-office
+    ├── css/dashboard.css   # UI du cockpit
+    └── js/
+        ├── charts.js       # Moteur de graphiques canvas
+        ├── dashboard-data.js # Données métier (flotte, sinistres, télématique)
+        └── dashboard.js    # Vues, navigation, filtres, rapport
 ```
 
 ## 🎨 Personnalisation

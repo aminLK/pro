@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velorah Pro · Cockpit de gestion & risque</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c8a45c'/%3E%3Ctext x='16' y='23' font-size='20' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%230b0d12'%3EV%3C/text%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- ===== Sidebar ===== -->
+    <aside class="sidebar" id="sidebar">
+      <a href="../index.html" class="sidebar__brand">
+        <span class="brand__mark">V</span>
+        <span class="brand__name">VELORAH<small>Pro</small></span>
+      </a>
+      <nav class="sidebar__nav" id="sideNav">
+        <button class="side-link is-active" data-view="overview"><span class="ic">▦</span>Tableau de bord</button>
+        <button class="side-link" data-view="fleet"><span class="ic">▤</span>Flotte</button>
+        <button class="side-link" data-view="bookings"><span class="ic">▥</span>Réservations</button>
+        <button class="side-link side-link--star" data-view="insurance"><span class="ic">◈</span>Assurance &amp; Risque</button>
+        <button class="side-link" data-view="report"><span class="ic">▦</span>Rapport assureur</button>
+      </nav>
+      <div class="sidebar__foot">
+        <div class="sidebar__user">
+          <div class="avatar">VL</div>
+          <div><b>Velorah Fleet SAS</b><span>Compte gestionnaire</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== Main ===== -->
+    <main class="main">
+      <header class="topbar">
+        <button class="topbar__menu" id="menuBtn" aria-label="Menu">☰</button>
+        <div class="topbar__title"><h1 id="viewTitle">Tableau de bord</h1><p id="viewSub">Vue d'ensemble de l'activité — 12 derniers mois</p></div>
+        <div class="topbar__actions">
+          <span class="pill pill--live"><i></i>Données en direct</span>
+          <button class="btn btn--ghost" id="exportBtn">Exporter</button>
+          <a href="../index.html" class="btn btn--gold">Voir le site</a>
+        </div>
+      </header>
+
+      <div class="view" id="view"><!-- injecté par JS --></div>
+    </main>
+  </div>
+
+  <div class="scrim" id="scrim"></div>
+
+  <script src="js/charts.js"></script>
+  <script src="js/dashboard-data.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
