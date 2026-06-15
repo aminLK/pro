@@ -111,7 +111,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 120px 0 40px; }
 .hero__bg {
   position: absolute; inset: 0; z-index: -2;
-  background: url("https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=2000&q=80") center/cover no-repeat;
+  background: url("assets/hero.svg") center/cover no-repeat, #10131b;
   transform: scale(1.05);
   animation: heroZoom 18s ease-in-out infinite alternate;
 }
@@ -227,7 +227,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .why__inner { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; }
 .why__media {
   aspect-ratio: 4/5; border-radius: var(--radius-lg); border: 1px solid var(--line);
-  background: url("https://images.unsplash.com/photo-1583121274602-3e2820c69888?auto=format&fit=crop&w=1000&q=80") center/cover;
+  background: url("assets/car-luxe.svg") center/cover, linear-gradient(135deg, #1c2230, #11141c);
   box-shadow: var(--shadow);
 }
 .features { list-style: none; margin-top: 1.6rem; display: grid; gap: 1.1rem; }

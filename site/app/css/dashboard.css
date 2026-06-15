@@ -248,6 +248,28 @@ tr.row-on{background:var(--gold-soft)!important}
 .match__eta{text-align:right;font-size:.82rem}
 .match__eta b{font-family:"Sora";color:var(--gold-2)}
 
+/* ===================== Formulaire modale ===================== */
+.bm__row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:.9rem}
+.bm__field{display:flex;flex-direction:column;gap:.35rem}
+.bm__field label{font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-2)}
+.bm__field input,.bm__field select{background:var(--bg-2);border:1px solid var(--line-2);border-radius:10px;padding:.7rem .85rem;color:var(--text);font-size:.92rem;outline:none;color-scheme:dark;transition:border-color .2s}
+.bm__field input:focus,.bm__field select:focus{border-color:var(--gold)}
+.bm__check{width:72px;height:72px;border-radius:50%;background:var(--green-soft);color:var(--green);display:grid;place-items:center;font-size:2rem;animation:viewIn .4s var(--ease)}
+
+/* Parcours (journey) */
+.journey{display:flex;flex-direction:column;gap:0;margin:.4rem 0}
+.jstep{display:flex;align-items:flex-start;gap:.8rem;position:relative;padding:.5rem 0 .9rem 0}
+.jstep:not(:last-child)::before{content:"";position:absolute;left:13px;top:28px;bottom:-2px;width:2px;background:var(--green)}
+.jdot{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:.85rem;font-weight:700;background:var(--green-soft);color:var(--green);border:1px solid var(--green)}
+.jstep b{display:block;font-size:.95rem}
+.jstep span{color:var(--muted);font-size:.82rem}
+
+/* match scoring */
+.match__rank{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-family:"Sora";font-weight:700;font-size:.85rem;background:var(--gold-soft);color:var(--gold-2)}
+.match__reasons{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.4rem}
+.match__reasons span{font-size:.72rem;color:var(--muted);background:var(--surface-2);padding:.15rem .5rem;border-radius:6px}
+.match__score{font-family:"Sora";font-weight:800;font-size:1.3rem;color:var(--green);display:block;line-height:1}
+
 /* ===================== Déconnexion ===================== */
 .logout{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted);font-size:1rem;transition:.18s}
 .logout:hover{background:var(--red-soft);color:var(--red)}

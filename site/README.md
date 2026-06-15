@@ -48,7 +48,11 @@ Le cockpit qui orchestre toute la plateforme, pensé pour la **démonstration au
 Accessible via « Espace Pro » du site, ou directement sur `app/login.html`.
 
 - **Tableau de bord** : sinistres ouverts, **délai moyen de déblocage**, % résolus < 24 h, véhicules mobilisables — graphiques animés (canvas, sans dépendance).
-- **Sinistres · 1 clic** ★ : pipeline par sinistre (Déclaré → Solution identifiée → Débloqué → Livré), **compte à rebours SLA live**, et **déblocage en 1 clic** qui propose le stock concessionnaire le plus rapide.
+- **Sinistres · 1 clic** ★ : déclaration d'un sinistre, **moteur de matching « Hubert »** (`app/js/match.js`)
+  qui vérifie l'**éligibilité du contrat** (droit au véhicule de courtoisie) puis classe les solutions par
+  **proximité géographique (Haversine) + délai + marque du contrat** — ex. un sinistre Renault à Tourcoing
+  retient *Renault Tourcoing (0 km)* avant *Renault Roubaix (4 km)*. Pipeline (Déclaré → Solution → Mobilisé → Livré),
+  **compte à rebours SLA live** et **parcours complet jusqu'à la livraison**.
 - **Concessionnaires** : pool de sourcing VL / PL, stock par énergie et délais de mise à disposition.
 - **Véhicules à dispo** : espace particuliers (revenus reversés, notes, missions).
 - **Enchères urgentes** ★ : marketplace inversé — besoins postés, offres prix + délai, meilleure offre surlignée, attribution.
@@ -90,5 +94,6 @@ site/
 - **Véhicules** : éditez le tableau `VELORAH_CARS` dans `js/data.js`.
 - **Options d'assurance** : tableau `VELORAH_OPTIONS` dans `js/data.js`.
 
-Les photos des véhicules sont chargées depuis Unsplash (CDN). Pour un usage en
-production, remplacez les URLs `img` par vos propres visuels dans `site/assets/`.
+Les visuels (véhicules, hero) sont des **illustrations SVG locales** dans `site/assets/`,
+garantissant un rendu **100% hors-ligne**. Pour des photos réelles, remplacez ces fichiers
+ou réaffectez les chemins `img` dans `js/data.js`.

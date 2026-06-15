@@ -115,19 +115,32 @@
   const vulModels = ["Renault Master", "Iveco Daily", "Fiat Ducato", "Mercedes Sprinter"];
 
   /* ---- Concessionnaires (pool de sourcing) ---- */
-  const dealerNames = ["AutoPro Île-de-France", "TruckCenter Rhône", "Méditerranée VL/PL", "Sud-Ouest Mobilité", "Nord Trucks", "Riviera Auto"];
-  const dealers = dealerNames.map((name, i) => {
+  const brands = ["Renault", "Peugeot", "Mercedes", "BMW", "Volvo", "Tesla"];
+  const dealerDefs = [
+    { name: "AutoPro Île-de-France", city: "Paris", brand: "Peugeot" },
+    { name: "TruckCenter Rhône", city: "Lyon", brand: "Volvo" },
+    { name: "Méditerranée VL/PL", city: "Marseille", brand: "Mercedes" },
+    { name: "Sud-Ouest Mobilité", city: "Bordeaux", brand: "Renault" },
+    { name: "Nord Trucks", city: "Lille", brand: "Volvo" },
+    { name: "Riviera Auto", city: "Nice", brand: "BMW" },
+    // Pour l'exemple Tourcoing / Roubaix / Renault :
+    { name: "Renault Tourcoing", city: "Tourcoing", brand: "Renault" },
+    { name: "Renault Roubaix", city: "Roubaix", brand: "Renault" },
+  ];
+  const dealers = dealerDefs.map((def, i) => {
     const stock = [];
     for (let k = 0; k < ri(3, 5); k++) {
       const type = pick(["VL", "VL", "PL"]);
       stock.push({
         type, energy: pick(energies),
         model: type === "PL" ? pick(plModels) : (rnd() < 0.5 ? pick(vulModels) : pick(models).model),
-        qty: ri(1, 6), deliveryH: ri(3, 36),
+        qty: ri(1, 6), deliveryH: ri(3, 22),
       });
     }
+    // garantir au moins un VL dispo (cas courant véhicule de courtoisie)
+    if (!stock.some((s) => s.type === "VL")) stock.push({ type: "VL", energy: pick(energies), model: pick(vulModels), qty: ri(1, 4), deliveryH: ri(3, 12) });
     return {
-      id: "CC-" + (200 + i), name, city: cities[i % cities.length], stock,
+      id: "CC-" + (200 + i), name: def.name, city: def.city, brand: def.brand, stock,
       available: stock.reduce((s, x) => s + x.qty, 0),
       avgDeliveryH: Math.round(stock.reduce((s, x) => s + x.deliveryH, 0) / stock.length),
       rating: +(4.3 + rnd() * 0.6).toFixed(1),
@@ -138,17 +151,30 @@
   const insurers = ["AXA", "Allianz", "Groupama", "MAIF", "Generali", "MACIF"];
   const claimStages = ["Déclaré", "Solution identifiée", "Débloqué", "Livré"];
   const reasons = ["Collision", "Bris de glace majeur", "Vol", "Incendie", "Panne immobilisante"];
+  const claimCategories = ["Citadine", "Berline", "SUV"];
+  const mkContract = (courtesy) => ({ courtesy, category: pick(claimCategories), maxDays: pick([15, 30, 30, 45]) });
   const claims = [];
-  for (let i = 0; i < 11; i++) {
+
+  // Cas de démonstration : exactement l'exemple Tourcoing / Roubaix / Renault
+  claims.push({
+    ref: "SIN-70512", insurer: "Groupama", client: "Camille Dehaene", city: "Tourcoing",
+    brand: "Renault", needType: "VL", energy: "Diesel", reason: "Collision",
+    declaredAt: now - 2 * 3600e3, slaHours: 24, stage: 0, status: claimStages[0],
+    assigned: null, unlockedInH: null, covered: true, contract: mkContract(true),
+  });
+
+  for (let i = 0; i < 10; i++) {
     const type = pick(["VL", "VL", "VL", "PL"]);
     const sla = pick([24, 24, 48]);
     const declaredAgoH = ri(1, sla - 1);
     const stage = ri(0, 3);
+    const covered = rnd() < 0.82;
     claims.push({
       ref: "SIN-" + (70000 + ri(100, 999)),
       insurer: pick(insurers),
       client: `${pick(firstNames)} ${pick(lastNames)}`,
       city: pick(cities),
+      brand: pick(brands),
       needType: type,
       energy: pick(energies),
       reason: pick(reasons),
@@ -158,7 +184,8 @@
       status: claimStages[stage],
       assigned: stage >= 2 ? pick(dealers).name : null,
       unlockedInH: stage >= 2 ? ri(4, sla - 2) : null,
-      covered: rnd() < 0.82,
+      covered,
+      contract: mkContract(covered ? rnd() < 0.9 : rnd() < 0.4),
     });
   }
 
@@ -178,7 +205,7 @@
   }
 
   /* ---- Marketplace inversé : enchères urgentes ---- */
-  const bidders = dealerNames.concat(["Particulier · K. Hamdi", "Particulier · L. Petit", "Flotte Express PL"]);
+  const bidders = dealerDefs.map((d) => d.name).concat(["Particulier · K. Hamdi", "Particulier · L. Petit", "Flotte Express PL"]);
   const auctions = [];
   for (let i = 0; i < 5; i++) {
     const type = pick(["VL", "PL", "PL"]);
@@ -219,7 +246,7 @@
       avgDriverScore, avgRisk, premiumDiscountPct, claimsByType,
       estimatedSaving: Math.round((premiumAnnual * premiumDiscountPct) / 100),
     },
-    dealers, claims, providers, auctions, insurers, energies, claimStages,
+    dealers, claims, providers, auctions, insurers, energies, claimStages, brands,
     ops: { avgUnlockH, under24, openClaims: claims.filter((c) => c.stage < 3).length, dealerStock: dealers.reduce((s, d) => s + d.available, 0) },
   };
 })();

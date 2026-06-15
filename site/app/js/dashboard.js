@@ -474,8 +474,14 @@
         ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock), delta: "stock concession", up: true, icon: "▤" })}
       </div>`;
 
-    view.innerHTML = head + `<div class="grid" id="claimList" style="gap:14px"></div>`;
+    view.innerHTML = head +
+      `<div class="card card--pad" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div><h3 style="font-size:1.05rem">File des sinistres</h3><span class="sub" style="color:var(--muted);font-size:.85rem">Moteur de matching « Hubert » : proximité + contrat + marque</span></div>
+        <button class="btn btn--gold" id="declareBtn">+ Déclarer un sinistre</button>
+      </div>
+      <div class="grid" id="claimList" style="gap:14px"></div>`;
     sparkAll();
+    $("#declareBtn").addEventListener("click", () => openDeclare(() => renderList()));
 
     const renderList = () => {
       $("#claimList").innerHTML = DB.claims.map((c, i) => {
@@ -518,33 +524,104 @@
   }
 
   function openUnlock(claim, idx, refresh) {
-    // matching : stock concessionnaire du bon type, le plus rapide d'abord
-    const matches = [];
-    DB.dealers.forEach((d) => d.stock.forEach((s) => {
-      if (s.type === claim.needType) matches.push({ dealer: d, ...s });
-    }));
-    matches.sort((a, b) => a.deliveryH - b.deliveryH);
-    const top = matches.slice(0, 5);
+    const M = window.DeflectMatch;
+    const elig = M.eligibility(claim.contract);
+
+    // Garde contractuelle : pas de véhicule de courtoisie => pas de déblocage
+    if (!elig.ok) {
+      openModal(`
+        <h3>Vérification du contrat — ${claim.ref}</h3>
+        <p class="msub">${claim.client} · ${claim.insurer} · ${claim.city}</p>
+        <div class="callout" style="background:var(--red-soft);border-color:rgba(239,111,111,.35)"><span>⚠</span><div><b>Non éligible.</b> ${elig.reason} Aucun véhicule ne peut être débloqué automatiquement.</div></div>
+        <p class="msub" style="margin-top:1rem">Le dossier peut être basculé en marketplace inversé si l'assureur prend en charge à titre commercial.</p>
+      `);
+      return;
+    }
+
+    const ranked = M.rank({ city: claim.city, brand: claim.brand, needType: claim.needType, energy: claim.energy }, DB.dealers);
+    const top = ranked.slice(0, 5);
 
     openModal(`
-      <h3>Débloquer une solution — ${claim.ref}</h3>
-      <p class="msub">Besoin : ${typeBadge(claim.needType)} ${claim.energy} · ${claim.city} · ${claim.insurer}. Véhicules disponibles, du plus rapide au plus lent :</p>
+      <h3>Matching « Hubert » — ${claim.ref}</h3>
+      <p class="msub">Besoin : ${typeBadge(claim.needType)} ${claim.energy} · ${claim.brand} · ${claim.city}</p>
+      <div class="callout" style="margin-bottom:1.1rem"><span>✓</span><div>${elig.reason}</div></div>
+      <p class="msub" style="margin-bottom:.6rem">Solutions classées par l'algorithme — <b>proximité + délai + marque du contrat</b> :</p>
       ${top.map((m, i) => `
         <div class="match" data-pick="${i}">
-          <span class="type-badge type-${m.type}">${m.type}</span>
-          <div class="match__main"><b>${m.model}</b><span>${m.dealer.name} · ${m.dealer.city} · ${m.energy} · ${m.qty} dispo</span></div>
-          <div class="match__eta">sous<br><b>${m.deliveryH} h</b></div>
+          <span class="match__rank">${i === 0 ? "★" : "#" + (i + 1)}</span>
+          <div class="match__main">
+            <b>${m.model} — ${m.dealer.name}</b>
+            <span>${m.dealer.brand} · ${m.dealer.city} · ${m.energy}</span>
+            <div class="match__reasons">${m.reasons.map((r) => `<span>${r}</span>`).join("")}</div>
+          </div>
+          <div class="match__eta"><span class="match__score">${m.score}</span><small>score</small><b>${m.etaH} h</b></div>
         </div>`).join("")}
-      <p class="msub" style="margin:1rem 0 0">Sélectionnez un véhicule : la solution est débloquée et le concessionnaire mobilisé de bout en bout.</p>
     `);
 
     dnBody.querySelectorAll("[data-pick]").forEach((el) => el.addEventListener("click", () => {
       const m = top[+el.dataset.pick];
-      claim.stage = 2; claim.status = "Débloqué"; claim.assigned = m.dealer.name; claim.unlockedInH = m.deliveryH;
-      closeModal();
+      claim.stage = 3; claim.status = "Livré"; claim.assigned = m.dealer.name; claim.unlockedInH = m.etaH;
+      showJourney(claim, m);
       refresh();
-      toast("Solution débloquée ⚡", `${m.model} mobilisé chez ${m.dealer.name} — livraison sous ${m.deliveryH} h. SLA respecté.`);
     }));
+  }
+
+  // Parcours complet : confirmation animée jusqu'à la livraison
+  function showJourney(claim, m) {
+    openModal(`
+      <div style="text-align:center">
+        <div class="bm__check" style="margin:0 auto 1.1rem">✓</div>
+        <h3>Solution débloquée en 1 clic</h3>
+        <p class="msub" style="margin-bottom:1.4rem">${claim.ref} · ${claim.client} · ${claim.city}</p>
+      </div>
+      <div class="journey">
+        ${["Sinistre déclaré", "Solution identifiée", "Concessionnaire mobilisé", "Véhicule livré"].map((s, i) => `
+          <div class="jstep ${i <= 3 ? "done" : ""}"><span class="jdot">${i < 3 ? "✓" : "→"}</span><div><b>${s}</b>${i === 2 ? `<span>${m.dealer.name} · ${m.dealer.city}</span>` : i === 3 ? `<span>${m.model} · sous ${m.etaH} h · ${m.distanceKm} km</span>` : ""}</div></div>`).join("")}
+      </div>
+      <div class="bm-line total" style="margin-top:1rem"><span>Délai total estimé</span><b>${m.etaH} h ${m.etaH <= claim.slaHours ? "· SLA respecté ✓" : ""}</b></div>
+      <button class="btn btn--gold btn--block" data-close style="margin-top:1.2rem;width:100%">Terminer</button>
+    `);
+    toast("Solution débloquée ⚡", `${m.model} chez ${m.dealer.name} (${m.distanceKm} km) — livré sous ${m.etaH} h. SLA respecté.`);
+  }
+
+  // Formulaire de déclaration d'un sinistre (pré-rempli sur l'exemple Tourcoing)
+  function openDeclare(refresh) {
+    const opt = (arr, sel) => arr.map((x) => `<option ${x === sel ? "selected" : ""}>${x}</option>`).join("");
+    openModal(`
+      <h3>Déclarer un sinistre</h3>
+      <p class="msub">Le besoin est qualifié, puis le moteur cherche la solution la plus proche et éligible.</p>
+      <form id="declareForm">
+        <div class="bm__row">
+          <div class="bm__field"><label>Assuré(e)</label><input id="d-client" value="Camille Dehaene" required /></div>
+          <div class="bm__field"><label>Assureur</label><select id="d-insurer">${opt(DB.insurers, "Groupama")}</select></div>
+        </div>
+        <div class="bm__row">
+          <div class="bm__field"><label>Lieu du sinistre</label><select id="d-city">${opt(Object.keys(window.DeflectMatch.GEO), "Tourcoing")}</select></div>
+          <div class="bm__field"><label>Marque (leasing)</label><select id="d-brand">${opt(DB.brands, "Renault")}</select></div>
+        </div>
+        <div class="bm__row">
+          <div class="bm__field"><label>Gabarit</label><select id="d-type"><option value="VL">VL — véhicule léger</option><option value="PL">PL — poids lourd</option></select></div>
+          <div class="bm__field"><label>Énergie</label><select id="d-energy">${opt(DB.energies, "Diesel")}</select></div>
+        </div>
+        <label class="bm-check" style="margin:.4rem 0 1.1rem"><input type="checkbox" id="d-courtesy" checked> Contrat avec véhicule de remplacement inclus</label>
+        <button type="submit" class="btn btn--gold btn--block" style="width:100%">Qualifier &amp; rechercher une solution</button>
+      </form>
+    `);
+    $("#declareForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const claim = {
+        ref: "SIN-" + (70000 + Math.floor(Math.random() * 900 + 100)),
+        insurer: $("#d-insurer").value, client: $("#d-client").value || "Assuré",
+        city: $("#d-city").value, brand: $("#d-brand").value,
+        needType: $("#d-type").value, energy: $("#d-energy").value, reason: "Collision",
+        declaredAt: Date.now(), slaHours: 24, stage: 0, status: DB.claimStages[0],
+        assigned: null, unlockedInH: null, covered: true,
+        contract: { courtesy: $("#d-courtesy").checked, category: "Berline", maxDays: 30 },
+      };
+      DB.claims.unshift(claim);
+      refresh();
+      openUnlock(claim, 0, refresh); // enchaîne directement sur le matching
+    });
   }
 
   /* ================================================================

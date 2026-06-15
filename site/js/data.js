@@ -154,6 +154,12 @@ window.VELORAH_CARS = [
   },
 ];
 
+/* Images locales (rendu garanti hors-ligne) — une illustration par catégorie. */
+(function () {
+  const slug = { "Citadine": "citadine", "Berline": "berline", "SUV": "suv", "Sport": "sport", "Luxe": "luxe", "Électrique": "electrique" };
+  window.VELORAH_CARS.forEach((c) => { c.img = "assets/car-" + (slug[c.category] || "berline") + ".svg"; });
+})();
+
 /* Options d'assurance (utilisées dans le calcul du devis) */
 window.VELORAH_OPTIONS = [
   { id: "basic", label: "Protection Essentielle", desc: "Franchise standard incluse", price: 0 },
