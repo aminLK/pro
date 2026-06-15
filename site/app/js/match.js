@@ -41,12 +41,18 @@
     return { ok: true, reason: `Véhicule de courtoisie inclus — catégorie ${contract.category}, jusqu'à ${contract.maxDays} jours.` };
   }
 
+  // Poids de l'algorithme — réglables en direct depuis le cockpit.
+  // La proximité est le critère n°1 (la plus pénalisante par km).
+  const weights = { distance: 0.28, eta: 0.6, brand: 14, energy: 6 };
+
   // Classement des solutions pour une demande donnée
   function rank(req, dealers) {
+    const need = Math.max(1, req.qty || 1);
     const out = [];
     dealers.forEach((d) => {
       d.stock.forEach((s) => {
-        if (s.type !== req.needType) return;          // bon gabarit (VL/PL)
+        if (s.type !== req.needType) return;          // bon gabarit (VL/VUL/PL/Médical)
+        if (s.qty < need) return;                      // quantité disponible suffisante
         const dist = distanceKm(req.city, d.city);
         const driveH = Math.round(dist / 70);          // ~70 km/h de convoyage
         const etaH = s.deliveryH + driveH;             // dispo concession + acheminement
@@ -54,10 +60,10 @@
         const energyMatch = req.energy && s.energy === req.energy;
 
         let score = 100;
-        score -= Math.min(42, dist * 0.085);           // proximité = critère n°1
-        score -= Math.min(30, etaH * 0.95);            // rapidité
-        if (brandMatch) score += 14;                   // même marque que le leasing
-        if (energyMatch) score += 6;                   // énergie identique
+        score -= Math.min(42, dist * weights.distance); // proximité = critère n°1
+        score -= Math.min(30, etaH * weights.eta);      // rapidité
+        if (brandMatch) score += weights.brand;         // même marque que le leasing
+        if (energyMatch) score += weights.energy;       // énergie identique
         score = Math.max(1, Math.round(score));
 
         out.push({
@@ -66,8 +72,9 @@
           reasons: [
             `${dist} km`,
             `livraison ${etaH} h`,
+            need > 1 ? `${s.qty} dispo (≥ ${need})` : `${s.qty} dispo`,
             brandMatch ? "marque du contrat ✓" : "autre marque",
-            energyMatch ? "énergie identique ✓" : s.energy,
+            energyMatch ? "énergie ✓" : s.energy,
           ],
         });
       });
@@ -76,5 +83,5 @@
     return out;
   }
 
-  window.DeflectMatch = { GEO, distanceKm, eligibility, rank };
+  window.DeflectMatch = { GEO, distanceKm, eligibility, rank, weights };
 })();

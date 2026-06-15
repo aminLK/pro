@@ -273,6 +273,35 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .contact__msg { margin-top: 1.2rem; color: var(--gold-2); font-weight: 500; }
 
 /* ===================================================================
+   RGPD / Conformité
+   =================================================================== */
+.rgpd { background: var(--bg-soft); }
+.rgpd__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.4rem; }
+.rgpd__card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 1.5rem; }
+.rgpd__card h3 { font-size: 1.05rem; margin-bottom: .5rem; color: var(--gold-2); }
+.rgpd__card p { color: var(--muted); font-size: .92rem; }
+.rgpd__note { margin-top: 1.6rem; color: var(--muted-2); font-size: .88rem; }
+.rgpd__note a { color: var(--gold); }
+@media (max-width: 900px) { .rgpd__grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 540px) { .rgpd__grid { grid-template-columns: 1fr; } }
+
+/* ===================================================================
+   Bandeau de consentement
+   =================================================================== */
+.consent {
+  position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 300;
+  width: min(940px, calc(100% - 32px));
+  background: rgba(22,26,36,.96); backdrop-filter: blur(14px);
+  border: 1px solid var(--line-2); border-radius: var(--radius); box-shadow: var(--shadow);
+}
+.consent__inner { display: flex; align-items: center; gap: 1.2rem; padding: 1rem 1.3rem; flex-wrap: wrap; }
+.consent__inner p { color: var(--muted); font-size: .9rem; flex: 1; min-width: 240px; }
+.consent__inner a { color: var(--gold); }
+.consent__actions { display: flex; gap: .6rem; }
+.consent .btn { padding: .6rem 1.2rem; }
+@media (max-width: 520px) { .consent__actions { width: 100%; } .consent .btn { flex: 1; } }
+
+/* ===================================================================
    Footer
    =================================================================== */
 .footer { background: var(--bg); border-top: 1px solid var(--line); padding-top: 3.5rem; }

@@ -107,64 +107,109 @@
   const lossRatioSeries = months.map((_, i) => Math.max(28, lossRatio + Math.round((rnd() - 0.5) * 24) - i * 0.6));
 
   /* ================================================================
-     DeflectNumera — sourcing, sinistres, particuliers, enchères
+     Fleet Navira — sourcing, sinistres, particuliers, enchères
      ================================================================ */
   const now = Date.now();
   const energies = ["Électrique", "Hybride", "Diesel", "Essence"];
   const plModels = ["Renault T High", "Mercedes Actros", "Volvo FH", "Iveco S-Way", "Scania R450"];
   const vulModels = ["Renault Master", "Iveco Daily", "Fiat Ducato", "Mercedes Sprinter"];
 
-  /* ---- Concessionnaires (pool de sourcing) ---- */
+  /* ---- Segments véhicules (tous types confondus, y compris médical) ---- */
+  const SEGMENTS = ["VL", "VUL", "PL", "Médical"]; // léger, utilitaire, poids lourd, ambulance/VSL
   const brands = ["Renault", "Peugeot", "Mercedes", "BMW", "Volvo", "Tesla"];
+
+  // Modèles cohérents par marque et par segment (un concessionnaire ne propose que sa marque)
+  const BRAND_MODELS = {
+    Renault: { VL: ["Clio", "Captur", "Mégane E-Tech"], VUL: ["Kangoo", "Trafic", "Master"], PL: ["Renault T High", "Renault C"], "Médical": ["Master Ambulance", "Trafic VSL"] },
+    Peugeot: { VL: ["208", "2008", "308"], VUL: ["Partner", "Expert", "Boxer"], PL: [], "Médical": ["Boxer Ambulance", "Expert VSL"] },
+    Mercedes: { VL: ["Classe A", "Classe B", "GLA"], VUL: ["Citan", "Vito", "Sprinter"], PL: ["Actros", "Atego"], "Médical": ["Sprinter Ambulance", "Vito VSL"] },
+    BMW: { VL: ["Série 1", "Série 2", "X1"], VUL: [], PL: [], "Médical": [] },
+    Volvo: { VL: ["XC40", "V60"], VUL: [], PL: ["Volvo FH", "Volvo FM"], "Médical": [] },
+    Tesla: { VL: ["Model 3", "Model Y"], VUL: [], PL: [], "Médical": [] },
+  };
+
   const dealerDefs = [
     { name: "AutoPro Île-de-France", city: "Paris", brand: "Peugeot" },
     { name: "TruckCenter Rhône", city: "Lyon", brand: "Volvo" },
-    { name: "Méditerranée VL/PL", city: "Marseille", brand: "Mercedes" },
+    { name: "Méditerranée Mercedes", city: "Marseille", brand: "Mercedes" },
     { name: "Sud-Ouest Mobilité", city: "Bordeaux", brand: "Renault" },
     { name: "Nord Trucks", city: "Lille", brand: "Volvo" },
-    { name: "Riviera Auto", city: "Nice", brand: "BMW" },
+    { name: "Riviera BMW", city: "Nice", brand: "BMW" },
     // Pour l'exemple Tourcoing / Roubaix / Renault :
     { name: "Renault Tourcoing", city: "Tourcoing", brand: "Renault" },
     { name: "Renault Roubaix", city: "Roubaix", brand: "Renault" },
+    // Spécialistes médical (ambulances / VSL)
+    { name: "Ambulances Services Nord", city: "Lille", brand: "Mercedes", medical: true },
+    { name: "VSL Tourcoing Santé", city: "Tourcoing", brand: "Renault", medical: true },
   ];
+
   const dealers = dealerDefs.map((def, i) => {
+    const pools = BRAND_MODELS[def.brand];
+    // segments réellement proposés par la marque
+    let segs = SEGMENTS.filter((seg) => pools[seg] && pools[seg].length);
+    if (def.medical) segs = ["Médical", "VUL"].filter((seg) => pools[seg] && pools[seg].length);
     const stock = [];
-    for (let k = 0; k < ri(3, 5); k++) {
-      const type = pick(["VL", "VL", "PL"]);
-      stock.push({
-        type, energy: pick(energies),
-        model: type === "PL" ? pick(plModels) : (rnd() < 0.5 ? pick(vulModels) : pick(models).model),
-        qty: ri(1, 6), deliveryH: ri(3, 22),
-      });
-    }
-    // garantir au moins un VL dispo (cas courant véhicule de courtoisie)
-    if (!stock.some((s) => s.type === "VL")) stock.push({ type: "VL", energy: pick(energies), model: pick(vulModels), qty: ri(1, 4), deliveryH: ri(3, 12) });
+    segs.forEach((seg) => {
+      const n = def.medical ? ri(1, 2) : ri(1, 2);
+      for (let k = 0; k < n; k++) {
+        stock.push({
+          type: seg, energy: pick(energies),
+          model: pick(pools[seg]),
+          qty: ri(1, 6), deliveryH: ri(3, 22),
+        });
+      }
+    });
     return {
-      id: "CC-" + (200 + i), name: def.name, city: def.city, brand: def.brand, stock,
+      id: "CC-" + (200 + i), name: def.name, city: def.city, brand: def.brand, medical: !!def.medical, stock,
       available: stock.reduce((s, x) => s + x.qty, 0),
       avgDeliveryH: Math.round(stock.reduce((s, x) => s + x.deliveryH, 0) / stock.length),
       rating: +(4.3 + rnd() * 0.6).toFixed(1),
     };
   });
 
+  // Stock déterministe pour les cas de démonstration (rend le matching reproductible)
+  const ensureStock = (name, item) => {
+    const d = dealers.find((x) => x.name === name);
+    if (d) { d.stock.unshift(item); d.available += item.qty; }
+  };
+  ensureStock("Renault Tourcoing", { type: "VL", energy: "Diesel", model: "Clio", qty: 3, deliveryH: 4 });
+  ensureStock("Renault Roubaix", { type: "VL", energy: "Diesel", model: "Mégane E-Tech", qty: 2, deliveryH: 5 });
+  ensureStock("Nord Trucks", { type: "PL", energy: "Diesel", model: "Volvo FH", qty: 4, deliveryH: 8 });
+  ensureStock("VSL Tourcoing Santé", { type: "Médical", energy: "Diesel", model: "Master Ambulance", qty: 2, deliveryH: 5 });
+
   /* ---- Sinistres (claims) — pipeline de déblocage ---- */
   const insurers = ["AXA", "Allianz", "Groupama", "MAIF", "Generali", "MACIF"];
   const claimStages = ["Déclaré", "Solution identifiée", "Débloqué", "Livré"];
   const reasons = ["Collision", "Bris de glace majeur", "Vol", "Incendie", "Panne immobilisante"];
-  const claimCategories = ["Citadine", "Berline", "SUV"];
+  const claimCategories = ["Citadine", "Berline", "SUV", "Utilitaire"];
+  const motifs = ["Collision", "Bris de glace majeur", "Vol", "Incendie", "Panne immobilisante", "Mise aux normes (non conforme)"];
   const mkContract = (courtesy) => ({ courtesy, category: pick(claimCategories), maxDays: pick([15, 30, 30, 45]) });
   const claims = [];
 
-  // Cas de démonstration : exactement l'exemple Tourcoing / Roubaix / Renault
+  // Cas de démo 1 : l'exemple Tourcoing / Roubaix / Renault (VL de courtoisie)
   claims.push({
     ref: "SIN-70512", insurer: "Groupama", client: "Camille Dehaene", city: "Tourcoing",
-    brand: "Renault", needType: "VL", energy: "Diesel", reason: "Collision",
+    brand: "Renault", needType: "VL", needQty: 1, energy: "Diesel", reason: "Collision",
     declaredAt: now - 2 * 3600e3, slaHours: 24, stage: 0, status: claimStages[0],
     assigned: null, unlockedInH: null, covered: true, contract: mkContract(true),
   });
+  // Cas de démo 2 : transport — 2 camions, mise aux normes
+  claims.push({
+    ref: "SIN-70488", insurer: "Allianz", client: "Transports Lefebvre", city: "Lille",
+    brand: "Volvo", needType: "PL", needQty: 2, energy: "Diesel", reason: "Mise aux normes (non conforme)",
+    declaredAt: now - 5 * 3600e3, slaHours: 48, stage: 1, status: claimStages[1],
+    assigned: null, unlockedInH: null, covered: true, contract: mkContract(true),
+  });
+  // Cas de démo 3 : médical — ambulance
+  claims.push({
+    ref: "SIN-70533", insurer: "MAIF", client: "Centre de soins Roubaix", city: "Roubaix",
+    brand: "Mercedes", needType: "Médical", needQty: 1, energy: "Diesel", reason: "Panne immobilisante",
+    declaredAt: now - 1.5 * 3600e3, slaHours: 24, stage: 0, status: claimStages[0],
+    assigned: null, unlockedInH: null, covered: true, contract: mkContract(true),
+  });
 
-  for (let i = 0; i < 10; i++) {
-    const type = pick(["VL", "VL", "VL", "PL"]);
+  for (let i = 0; i < 9; i++) {
+    const type = pick(["VL", "VL", "VUL", "PL", "Médical"]);
     const sla = pick([24, 24, 48]);
     const declaredAgoH = ri(1, sla - 1);
     const stage = ri(0, 3);
@@ -176,8 +221,9 @@
       city: pick(cities),
       brand: pick(brands),
       needType: type,
+      needQty: type === "PL" && rnd() < 0.3 ? 2 : 1,
       energy: pick(energies),
-      reason: pick(reasons),
+      reason: pick(motifs),
       declaredAt: now - declaredAgoH * 3600e3,
       slaHours: sla,
       stage,

@@ -1,11 +1,30 @@
-# DeflectNumera — Mobilité de remplacement en moins de 24 h
+# Fleet Navira — Mobilité de remplacement en moins de 24 h
+
+> **Confidentiel — Tous droits réservés.** Voir `LICENSE` (licence propriétaire).
 
 Plateforme qui connecte **assurances, concessionnaires et particuliers** pour
-**débloquer un véhicule de remplacement en moins de 24-48 h** lors d'un sinistre —
-VL ou PL, électrique ou thermique, toutes gammes. Tracking du **kilomètre**, du
+**débloquer un véhicule de remplacement en moins de 24-48 h** lors d'un sinistre.
+Tous types confondus — **VL, VUL, PL et médical (ambulances / VSL)**, électrique ou
+thermique, toutes gammes — y compris des cas transport (besoin de **plusieurs camions**,
+remplacement d'un véhicule **non conforme aux normes**). Tracking du **kilomètre**, du
 **produit** et du **sinistre**, de la déclaration à la restitution.
 
-HTML / CSS / JavaScript natif — aucune dépendance, aucun build.
+HTML / CSS / JavaScript natif — aucune dépendance, aucun build. **Fonctionne 100% en local et hors-ligne.**
+
+## 🤖 Moteur de matching « Hubert » (`app/js/match.js`)
+
+Algorithme déterministe qui, pour un sinistre donné :
+1. vérifie l'**éligibilité du contrat** (droit au véhicule de courtoisie) ;
+2. filtre par **gabarit** (VL/VUL/PL/Médical) et **quantité** disponible (ex. 2 camions) ;
+3. classe les solutions par **proximité géographique (Haversine) + délai + marque du contrat + énergie**.
+
+Exemple : sinistre Renault à **Tourcoing** → *Renault Tourcoing (0 km)* l'emporte sur *Renault Roubaix (4 km)*.
+Les **pondérations sont réglables en direct** depuis le cockpit (panneau « Réglages du moteur »).
+
+## 🔐 Conformité & protection
+
+- **RGPD by design** : minimisation, consentement (bandeau), droits, données de santé (HDS), sécurité — section dédiée sur le site.
+- **Licence propriétaire** (`LICENSE`) : code confidentiel, tous droits réservés, aucune réutilisation sans accord écrit.
 
 ## 🧭 Les 3 espaces
 

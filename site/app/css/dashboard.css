@@ -203,7 +203,9 @@ tr.row-on{background:var(--gold-soft)!important}
 .claim__need{display:flex;flex-wrap:wrap;gap:.4rem}
 .type-badge{font-family:"Sora";font-weight:700;font-size:.74rem;padding:.2rem .5rem;border-radius:6px;letter-spacing:.04em}
 .type-VL{background:rgba(106,166,255,.16);color:var(--blue)}
+.type-VUL{background:rgba(94,194,122,.16);color:var(--green)}
 .type-PL{background:rgba(169,139,255,.16);color:var(--violet)}
+.type-MED{background:rgba(239,111,111,.16);color:var(--red)}
 .stepper{display:flex;align-items:center;gap:0;margin-top:.5rem}
 .stepper .dot{width:11px;height:11px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-2);flex:none;z-index:1}
 .stepper .dot.done{background:var(--green);border-color:var(--green)}

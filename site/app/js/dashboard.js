@@ -18,7 +18,7 @@
   const view = $("#view");
   const titles = {
     overview: ["Tableau de bord", "Pilotage temps réel : sinistres, sourcing et SLA 24/48 h"],
-    dealers: ["Concessionnaires", "Pool de sourcing VL / PL — stock et délais de mise à dispo"],
+    dealers: ["Concessionnaires", "Pool de sourcing tous types (VL, VUL, PL, médical) — stock et délais de mise à dispo"],
     fleet: ["Flotte & tracking", "120 véhicules · kilométrage, occupation et score de risque"],
     claims: ["Sinistres · déblocage en 1 clic", "Identifiez et débloquez un véhicule de remplacement en < 24 h"],
     insurance: ["Assurance & Risque", "Sinistralité, scoring télématique et prime estimée"],
@@ -113,7 +113,7 @@
         ${kpi({ label: "Sinistres ouverts", value: num(ops.openClaims), delta: "déblocage en cours", up: true, icon: "◈" })}
         ${kpi({ label: "Délai moyen de déblocage", value: ops.avgUnlockH + " h", delta: "objectif < 24 h", up: true, icon: "⚡" })}
         ${kpi({ label: "Sinistres résolus < 24 h", value: ops.under24 + " %", delta: "+9 pts", up: true, icon: "✓" })}
-        ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock) + " + flotte", delta: "VL & PL · multi-énergie", up: true, icon: "▤" })}
+        ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock) + " + flotte", delta: "Tous types · multi-énergie", up: true, icon: "▤" })}
       </div>
 
       <div class="grid" style="grid-template-columns:1.6fr 1fr">
@@ -251,7 +251,7 @@
       <div class="ins-hero">
         <div class="ins-banner">
           <h2>Économie de prime estimée grâce à la télématique</h2>
-          <p>DeflectNumera équipe 100% de sa flotte de capteurs de conduite. Le scoring comportemental
+          <p>Fleet Navira équipe 100% de sa flotte de capteurs de conduite. Le scoring comportemental
              permet de négocier une prime indexée sur le risque réel — pas sur une moyenne de marché.</p>
           <div class="ins-figure"><b>${euro(ins.estimatedSaving)}</b><span>/ an &nbsp;·&nbsp; soit -${ins.premiumDiscountPct}% sur la prime</span></div>
           <div class="callout" style="margin-top:18px"><span>✓</span><div><b>Argument assureur :</b> un ratio S/P de ${ins.lossRatio}% (sous la barre des 70%) et un score conducteur moyen de ${ins.avgDriverScore}/100 placent la flotte dans le meilleur quartile de risque.</div></div>
@@ -449,9 +449,15 @@
   }
 
   /* ================================================================
-     VUE — Sinistres · déblocage en 1 clic  (★ cœur DeflectNumera)
+     VUE — Sinistres · déblocage en 1 clic  (★ cœur Fleet Navira)
      ================================================================ */
-  const typeBadge = (t) => `<span class="type-badge type-${t}">${t}</span>`;
+  const typeSlug = (t) => ({ "VL": "VL", "VUL": "VUL", "PL": "PL", "Médical": "MED" }[t] || "VL");
+  const typeBadge = (t) => `<span class="type-badge type-${typeSlug(t)}">${t}</span>`;
+  const tuneSlider = (k, label, min, max, val, step) => `
+    <div class="sim-field">
+      <div class="sim-field__top"><label>${label}</label><span class="sim-out" id="tune-${k}-out">${val}</span></div>
+      <input type="range" data-w="${k}" id="tune-${k}" min="${min}" max="${max}" step="${step}" value="${val}" />
+    </div>`;
   function stepper(stage) {
     const labels = DB.claimStages;
     let html = '<div class="stepper">';
@@ -474,14 +480,33 @@
         ${kpi({ label: "Véhicules mobilisables", value: num(ops.dealerStock), delta: "stock concession", up: true, icon: "▤" })}
       </div>`;
 
+    const W = window.DeflectMatch.weights;
     view.innerHTML = head +
       `<div class="card card--pad" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
         <div><h3 style="font-size:1.05rem">File des sinistres</h3><span class="sub" style="color:var(--muted);font-size:.85rem">Moteur de matching « Hubert » : proximité + contrat + marque</span></div>
-        <button class="btn btn--gold" id="declareBtn">+ Déclarer un sinistre</button>
+        <div style="display:flex;gap:.6rem">
+          <button class="btn btn--ghost" id="tuneBtn">⚙ Réglages du moteur</button>
+          <button class="btn btn--gold" id="declareBtn">+ Déclarer un sinistre</button>
+        </div>
+      </div>
+      <div class="card card--pad" id="tunePanel" hidden>
+        <div class="card__head"><h3>Pondération de l'algorithme</h3><span class="sub">l'impact est immédiat sur le prochain matching</span></div>
+        <div class="sim-controls">
+          ${tuneSlider("distance", "Poids de la proximité", 0, 0.6, W.distance, 0.01)}
+          ${tuneSlider("eta", "Poids du délai de livraison", 0, 2, W.eta, 0.05)}
+          ${tuneSlider("brand", "Bonus marque du contrat", 0, 30, W.brand, 1)}
+          ${tuneSlider("energy", "Bonus énergie identique", 0, 20, W.energy, 1)}
+        </div>
       </div>
       <div class="grid" id="claimList" style="gap:14px"></div>`;
     sparkAll();
     $("#declareBtn").addEventListener("click", () => openDeclare(() => renderList()));
+    $("#tuneBtn").addEventListener("click", () => { const p = $("#tunePanel"); p.hidden = !p.hidden; });
+    $("#tunePanel").addEventListener("input", (e) => {
+      const k = e.target.dataset.w; if (!k) return;
+      window.DeflectMatch.weights[k] = +e.target.value;
+      $("#tune-" + k + "-out").textContent = e.target.value;
+    });
 
     const renderList = () => {
       $("#claimList").innerHTML = DB.claims.map((c, i) => {
@@ -497,7 +522,7 @@
             <div class="meta">${c.insurer} — ${c.client} · ${c.city} ${c.covered ? "" : "· <span style='color:var(--gold-2)'>non couvert</span>"}</div>
             ${stepper(c.stage)}
           </div>
-          <div class="claim__need">${typeBadge(c.needType)}<span class="tag tag--muted">${c.energy}</span><span class="tag tag--muted">SLA ${c.slaHours} h</span></div>
+          <div class="claim__need">${typeBadge(c.needType)}${(c.needQty || 1) > 1 ? `<span class="tag tag--gold">×${c.needQty}</span>` : ""}<span class="tag tag--muted">${c.energy}</span><span class="tag tag--muted">SLA ${c.slaHours} h</span></div>
           <div class="countdown ${r.cls}" data-deadline="${deadline}">${r.txt}<small>temps restant SLA</small></div>
           <div>${action}</div>
         </div>`;
@@ -538,12 +563,12 @@
       return;
     }
 
-    const ranked = M.rank({ city: claim.city, brand: claim.brand, needType: claim.needType, energy: claim.energy }, DB.dealers);
+    const ranked = M.rank({ city: claim.city, brand: claim.brand, needType: claim.needType, energy: claim.energy, qty: claim.needQty || 1 }, DB.dealers);
     const top = ranked.slice(0, 5);
 
     openModal(`
       <h3>Matching « Hubert » — ${claim.ref}</h3>
-      <p class="msub">Besoin : ${typeBadge(claim.needType)} ${claim.energy} · ${claim.brand} · ${claim.city}</p>
+      <p class="msub">Besoin : ${typeBadge(claim.needType)}${(claim.needQty || 1) > 1 ? ` ×${claim.needQty}` : ""} ${claim.energy} · ${claim.brand} · ${claim.city} · <em>${claim.reason}</em></p>
       <div class="callout" style="margin-bottom:1.1rem"><span>✓</span><div>${elig.reason}</div></div>
       <p class="msub" style="margin-bottom:.6rem">Solutions classées par l'algorithme — <b>proximité + délai + marque du contrat</b> :</p>
       ${top.map((m, i) => `
@@ -600,8 +625,12 @@
           <div class="bm__field"><label>Marque (leasing)</label><select id="d-brand">${opt(DB.brands, "Renault")}</select></div>
         </div>
         <div class="bm__row">
-          <div class="bm__field"><label>Gabarit</label><select id="d-type"><option value="VL">VL — véhicule léger</option><option value="PL">PL — poids lourd</option></select></div>
+          <div class="bm__field"><label>Gabarit</label><select id="d-type"><option value="VL">VL — véhicule léger</option><option value="VUL">VUL — utilitaire</option><option value="PL">PL — poids lourd</option><option value="Médical">Médical — ambulance / VSL</option></select></div>
           <div class="bm__field"><label>Énergie</label><select id="d-energy">${opt(DB.energies, "Diesel")}</select></div>
+        </div>
+        <div class="bm__row">
+          <div class="bm__field"><label>Quantité</label><select id="d-qty"><option>1</option><option>2</option><option>3</option></select></div>
+          <div class="bm__field"><label>Motif</label><select id="d-motif"><option>Collision</option><option>Panne immobilisante</option><option>Mise aux normes (non conforme)</option><option>Vol</option><option>Incendie</option></select></div>
         </div>
         <label class="bm-check" style="margin:.4rem 0 1.1rem"><input type="checkbox" id="d-courtesy" checked> Contrat avec véhicule de remplacement inclus</label>
         <button type="submit" class="btn btn--gold btn--block" style="width:100%">Qualifier &amp; rechercher une solution</button>
@@ -613,7 +642,8 @@
         ref: "SIN-" + (70000 + Math.floor(Math.random() * 900 + 100)),
         insurer: $("#d-insurer").value, client: $("#d-client").value || "Assuré",
         city: $("#d-city").value, brand: $("#d-brand").value,
-        needType: $("#d-type").value, energy: $("#d-energy").value, reason: "Collision",
+        needType: $("#d-type").value, needQty: +$("#d-qty").value || 1,
+        energy: $("#d-energy").value, reason: $("#d-motif").value,
         declaredAt: Date.now(), slaHours: 24, stage: 0, status: DB.claimStages[0],
         assigned: null, unlockedInH: null, covered: true,
         contract: { courtesy: $("#d-courtesy").checked, category: "Berline", maxDays: 30 },
@@ -631,7 +661,7 @@
     view.innerHTML = `
       <div class="grid kpis">
         ${kpi({ label: "Concessionnaires partenaires", value: DB.dealers.length, delta: "réseau actif", up: true, icon: "▤" })}
-        ${kpi({ label: "Véhicules mobilisables", value: num(DB.ops.dealerStock), delta: "VL & PL", up: true, icon: "▥" })}
+        ${kpi({ label: "Véhicules mobilisables", value: num(DB.ops.dealerStock), delta: "VL · VUL · PL · Médical", up: true, icon: "▥" })}
         ${kpi({ label: "Délai moyen de mise à dispo", value: Math.round(DB.dealers.reduce((s, d) => s + d.avgDeliveryH, 0) / DB.dealers.length) + " h", delta: "objectif < 24 h", up: true, icon: "⚡" })}
         ${kpi({ label: "Couverture nationale", value: DB.cities.length + " villes", delta: "multi-énergie", up: true, icon: "◉" })}
       </div>
@@ -747,7 +777,7 @@
     view.innerHTML = `
       <div class="report">
         <div class="report__head">
-          <div><span class="brand__name">DeflectNumera</span><div class="report p" style="margin-top:.4rem;color:var(--muted)">Dossier de souscription flotte · ${today}</div></div>
+          <div><span class="brand__name">Fleet Navira</span><div class="report p" style="margin-top:.4rem;color:var(--muted)">Dossier de souscription flotte · ${today}</div></div>
           <button class="btn btn--gold" id="dlReport">Télécharger le PDF</button>
         </div>
 
@@ -774,11 +804,11 @@
 
         <h2>4. Proposition</h2>
         <p>Sur la base d'un ratio S/P maîtrisé et d'un scoring conducteur supérieur à la moyenne,
-           DeflectNumera sollicite une <strong style="color:var(--text)">prime indexée sur le risque réel</strong>.</p>
+           Fleet Navira sollicite une <strong style="color:var(--text)">prime indexée sur le risque réel</strong>.</p>
         <div class="stat-line"><span>Réduction de prime demandée</span><b style="color:var(--gold-2)">-${ins.premiumDiscountPct}%</b></div>
         <div class="stat-line"><span>Économie annuelle estimée</span><b style="color:var(--gold-2)">${euro(ins.estimatedSaving)}</b></div>
 
-        <p class="report__sig">Document généré automatiquement par DeflectNumera à partir des données d'exploitation et de télématique. Chiffres de démonstration.</p>
+        <p class="report__sig">Document généré automatiquement par Fleet Navira à partir des données d'exploitation et de télématique. Chiffres de démonstration.</p>
       </div>`;
     $("#dlReport").addEventListener("click", () => { window.print && toast("PDF prêt", "Utilisez la boîte d'impression pour enregistrer en PDF."); setTimeout(() => window.print(), 300); });
   }
