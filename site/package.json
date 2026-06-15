@@ -1,0 +1,10 @@
+{
+  "name": "fleet-navira",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fleet Navira — plateforme de mobilité de remplacement (démo).",
+  "scripts": {
+    "start": "node server.js",
+    "serve": "node server.js"
+  }
+}
