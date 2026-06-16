@@ -30,10 +30,28 @@ const server = http.createServer((req, res) => {
     let file = safe;
     if (fs.existsSync(file) && fs.statSync(file).isDirectory()) file = path.join(file, "index.html");
 
-    fs.readFile(file, (err, data) => {
-      if (err) { res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" }); return res.end("<h1>404</h1>"); }
-      res.writeHead(200, { "Content-Type": TYPES[path.extname(file).toLowerCase()] || "application/octet-stream" });
-      res.end(data);
+    fs.stat(file, (err, st) => {
+      if (err || !st.isFile()) { res.writeHead(404, { "Content-Type": "text/html; charset=utf-8" }); return res.end("<h1>404</h1>"); }
+      const type = TYPES[path.extname(file).toLowerCase()] || "application/octet-stream";
+      const range = req.headers.range;
+      // Requêtes Range (indispensable pour le scrub vidéo / seek)
+      if (range) {
+        const m = /bytes=(\d*)-(\d*)/.exec(range) || [];
+        let start = m[1] ? parseInt(m[1], 10) : 0;
+        let end = m[2] ? parseInt(m[2], 10) : st.size - 1;
+        if (isNaN(start) || isNaN(end) || start > end || end >= st.size) {
+          res.writeHead(416, { "Content-Range": `bytes */${st.size}` }); return res.end();
+        }
+        res.writeHead(206, {
+          "Content-Type": type,
+          "Content-Range": `bytes ${start}-${end}/${st.size}`,
+          "Accept-Ranges": "bytes",
+          "Content-Length": end - start + 1,
+        });
+        return fs.createReadStream(file, { start, end }).pipe(res);
+      }
+      res.writeHead(200, { "Content-Type": type, "Accept-Ranges": "bytes", "Content-Length": st.size });
+      fs.createReadStream(file).pipe(res);
     });
   } catch (e) {
     res.writeHead(500); res.end("500");

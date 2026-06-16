@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleet Navira — Hero vidéo scrollé</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c8a45c'/%3E%3Ctext x='16' y='23' font-size='18' font-family='Arial' font-weight='bold' text-anchor='middle' fill='%230b0d12'%3EF%3C/text%3E%3C/svg%3E" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:"Inter",system-ui,sans-serif;background:#0a0c11;color:#eef1f6;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-family:"Sora",sans-serif;letter-spacing:-.01em}
+    a{color:inherit;text-decoration:none}
+
+    /* --- top bar --- */
+    .bar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:16px 26px}
+    .brand{display:flex;align-items:center;gap:.55rem;font-family:"Sora";font-weight:700;letter-spacing:.04em}
+    .brand i{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#e2c585,#c8a45c);color:#1a1407;font-weight:800;font-style:normal}
+    .bar a.cta{border:1px solid rgba(255,255,255,.2);padding:.5rem 1.1rem;border-radius:999px;font-size:.9rem;font-weight:600}
+
+    /* --- ScrollHero --- */
+    .sh{position:relative}
+    .sh__sticky{position:sticky;top:0;height:100vh;overflow:hidden;background:#000}
+    .sh__video{width:100%;height:100%;object-fit:cover;display:block}
+    .sh__overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+    .sh__cap{position:absolute;margin:0;text-align:center;opacity:0;will-change:opacity,transform;
+      font-size:clamp(2rem,6vw,4.5rem);font-weight:800;text-shadow:0 6px 40px rgba(0,0,0,.6);padding:0 5vw}
+    .sh__cap span{color:#ffb347}
+    .sh__hint{position:absolute;bottom:30px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.7);font-size:.85rem;letter-spacing:.12em;text-transform:uppercase;animation:bob 2s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+
+    /* --- contenu après le hero --- */
+    .after{max-width:980px;margin:0 auto;padding:110px 24px 140px;text-align:center}
+    .after h2{font-size:clamp(1.8rem,4vw,2.8rem);margin-bottom:1rem}
+    .after p{color:#98a1b1;font-size:1.1rem;max-width:620px;margin:0 auto 2rem}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.9rem 1.7rem;border-radius:999px;font-weight:700;
+      background:linear-gradient(135deg,#e2c585,#c8a45c);color:#1a1407}
+    .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin-top:3rem;text-align:left}
+    .card{background:#141925;border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:1.4rem}
+    .card b{font-family:"Sora";display:block;margin-bottom:.3rem}
+    .card p{font-size:.92rem;color:#98a1b1;margin:0}
+    .note{margin-top:3rem;font-size:.82rem;color:#646d7e}
+    @media(max-width:760px){.cards{grid-template-columns:1fr}}
+    @media(prefers-reduced-motion:reduce){.sh__hint{animation:none}}
+  </style>
+</head>
+<body>
+  <div class="bar">
+    <a href="index.html" class="brand"><i>FN</i> Fleet Navira</a>
+    <a href="index.html" class="cta">Découvrir la plateforme →</a>
+  </div>
+
+  <!-- ===== ScrollHero : la vidéo se scrubbe au défilement ===== -->
+  <section class="sh" data-scroll-hero style="height:340vh" data-smoothing="0.2">
+    <div class="sh__sticky">
+      <video class="sh__video" data-sh-video src="assets/hero.mp4" poster="assets/hero-poster.jpg" muted playsinline preload="auto"></video>
+      <div class="sh__overlay">
+        <h2 class="sh__cap" data-sh-at="0,0.42">0 → <span>200 km/h</span></h2>
+        <h2 class="sh__cap" data-sh-at="0.42,0.6">Au cœur de la machine</h2>
+        <h2 class="sh__cap" data-sh-at="0.6,0.8">Le virage se dévoile</h2>
+        <h2 class="sh__cap" data-sh-at="0.8,1">L'exception,<br/>en mouvement</h2>
+        <div class="sh__hint">Défilez ↓</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contenu après le hero ===== -->
+  <section class="after">
+    <h2>Une mobilité qui ne s'arrête jamais</h2>
+    <p>De la déclaration de sinistre à la livraison du véhicule de remplacement, Fleet Navira orchestre tout en moins de 24 h.</p>
+    <a href="app/login.html" class="btn">Ouvrir l'Espace Pro →</a>
+    <div class="cards">
+      <div class="card"><b>Débloqué en 1 clic</b><p>Le bon véhicule, le plus proche et éligible, mobilisé instantanément.</p></div>
+      <div class="card"><b>Tous types</b><p>VL, VUL, PL et médical — électrique ou thermique, toutes gammes.</p></div>
+      <div class="card"><b>Tracé de bout en bout</b><p>Kilomètres, photos et état des pièces, jusqu'à la restitution.</p></div>
+    </div>
+    <p class="note">Vidéo de démonstration générée localement. Remplacez <code>assets/hero.mp4</code> par votre rush pour le rendu final.</p>
+  </section>
+
+  <script src="js/scroll-hero.js"></script>
+</body>
+</html>
