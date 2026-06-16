@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 220" width="400" height="220">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1c2230"/><stop offset="1" stop-color="#10131b"/></linearGradient>
+    <linearGradient id="body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6aa6ff"/><stop offset="1" stop-color="#6aa6ff" stop-opacity=".75"/></linearGradient>
+    <radialGradient id="glow" cx="50%" cy="38%" r="60%"><stop offset="0" stop-color="#6aa6ff" stop-opacity=".22"/><stop offset="1" stop-color="#6aa6ff" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="400" height="220" fill="url(#bg)"/>
+  <rect width="400" height="220" fill="url(#glow)"/>
+  <ellipse cx="200" cy="186" rx="150" ry="14" fill="#000" opacity=".25"/>
+  <path d="M40 150 C40 118 72 112 98 110 L124 109 C140 84 172 73 205 73 C246 73 272 86 292 110 L334 116 C360 119 368 130 368 150 L368 160 C368 167 362 169 356 169 L46 169 C40 169 38 162 38 156 Z" fill="url(#body)"/>
+  <path d="M132 108 C146 88 170 80 200 80 C230 80 252 89 268 108 Z" fill="#0e1118" opacity=".55"/>
+  <path d="M150 104 L196 84 L196 104 Z M212 84 C236 86 252 95 262 104 L212 104 Z" fill="#6aa6ff" opacity=".25"/>
+  <circle cx="115" cy="169" r="27" fill="#0e1118"/><circle cx="115" cy="169" r="27" fill="none" stroke="#6aa6ff" stroke-width="3"/><circle cx="115" cy="169" r="10" fill="#6aa6ff" opacity=".5"/>
+  <circle cx="298" cy="169" r="27" fill="#0e1118"/><circle cx="298" cy="169" r="27" fill="none" stroke="#6aa6ff" stroke-width="3"/><circle cx="298" cy="169" r="10" fill="#6aa6ff" opacity=".5"/>
+  <rect x="352" y="128" width="14" height="10" rx="3" fill="#fff" opacity=".8"/>
+  <text x="20" y="32" font-family="Arial" font-size="13" fill="#6aa6ff" opacity=".8" font-weight="bold">CITADINE</text>
+</svg>
