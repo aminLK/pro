@@ -284,6 +284,28 @@
   const avgUnlockH = Math.round(unlocked.reduce((s, c) => s + (c.unlockedInH || 0), 0) / (unlocked.length || 1));
   const under24 = Math.round((unlocked.filter((c) => (c.unlockedInH || 99) <= 24).length / (unlocked.length || 1)) * 100);
 
+  /* ---- Maintenance / inspections véhicules ---- */
+  const inspectionItems = ["Disques", "Plaquettes avant", "Plaquettes arrière", "Pneumatiques", "Niveaux (huile/liquides)", "Carrosserie", "Éclairage"];
+  const inspStates = ["Bon", "À surveiller", "À remplacer"];
+  // photo de démonstration générée localement (data-URI, fonctionne hors-ligne)
+  const photoPh = (label, color) => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(
+    `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 140'><rect width='200' height='140' fill='#1b2130'/><rect x='8' y='8' width='184' height='124' rx='8' fill='none' stroke='${color}' stroke-opacity='.5'/><circle cx='100' cy='58' r='22' fill='none' stroke='${color}' stroke-width='3'/><text x='100' y='112' font-family='Arial' font-size='13' fill='${color}' text-anchor='middle'>${label}</text></svg>`);
+  const mkInspection = (v, mech, driver, agoH, states) => ({
+    id: "INS-" + (5000 + Math.floor(rnd() * 9000)),
+    vehicleId: v.id, model: v.model, plate: v.plate, city: v.city,
+    mechanic: mech, driver, odometer: v.odometer, at: now - agoH * 3600e3,
+    items: inspectionItems.map((it, i) => ({ label: it, state: states[i] || "Bon" })),
+    photos: [photoPh("Avant", "#6aa6ff"), photoPh("Freins", "#c8a45c"), photoPh("Pneu AV", "#5ec27a")],
+    comment: "",
+  });
+  const inspections = [
+    mkInspection(fleet[2], "Karim B. (méca.)", "Transp. Lefebvre", 3, ["À remplacer", "À surveiller", "Bon", "Bon", "Bon", "Bon", "Bon"]),
+    mkInspection(fleet[5], "Sophie M. (méca.)", "L. Petit", 26, ["Bon", "Bon", "Bon", "À remplacer", "À surveiller", "Bon", "Bon"]),
+    mkInspection(fleet[7], "Marc R. (méca.)", "K. Hamdi", 52, ["Bon", "Bon", "Bon", "Bon", "Bon", "À surveiller", "Bon"]),
+  ];
+  inspections[0].comment = "Disques voilés à l'avant, remplacement nécessaire avant remise en service.";
+  inspections[1].comment = "Pneus avant sous le témoin d'usure, à changer.";
+
   window.VELORAH_DB = {
     months, fleet, bookings, cities, models, statusList,
     series: { revenue, utilization: utilizationSeries, bookings: bookingsSeries, lossRatio: lossRatioSeries },
@@ -293,6 +315,7 @@
       estimatedSaving: Math.round((premiumAnnual * premiumDiscountPct) / 100),
     },
     dealers, claims, providers, auctions, insurers, energies, claimStages, brands,
+    inspections, inspectionItems, inspStates, photoPh,
     ops: { avgUnlockH, under24, openClaims: claims.filter((c) => c.stage < 3).length, dealerStock: dealers.reduce((s, d) => s + d.available, 0) },
   };
 })();

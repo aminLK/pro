@@ -76,6 +76,8 @@ Accessible via « Espace Pro » du site, ou directement sur `app/login.html`.
 - **Véhicules à dispo** : espace particuliers (revenus reversés, notes, missions).
 - **Enchères urgentes** ★ : marketplace inversé — besoins postés, offres prix + délai, **flux d'enchères en temps réel** (les offres tombent automatiquement, notifications, pause/reprise), meilleure offre surlignée, attribution.
 - **Carte temps réel** ★ : Hexagone projeté (lat/lon → SVG), concessions, sinistres en attente et **livraisons en transit** animées (convois), avec **ETA de livraison en direct** par dossier.
+- **Maintenance & photos** ★ : fiche d'inspection par véhicule — **upload de photos** (chauffeur), **état des pièces** (disques, plaquettes, pneus, niveaux…) renseigné par le **mécanicien**, kilométrage, commentaire, horodatage.
+- **Logistique conseiller** : au déblocage, le parcours affiche le **point de départ (concession) → livraison (sinistre)** avec distance et ETA, pour piloter l'acheminement.
 - **Flotte & tracking** : 120 véhicules, recherche + filtres, kilométrage, occupation et **score de risque**.
 - **Réservations** : suivi des locations (confirmée / en cours / terminée), recherche et filtres.
 - **Assurance & Risque** ★ : la pièce maîtresse — sinistralité, ratio S/P, scoring **télématique**

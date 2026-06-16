@@ -20,6 +20,7 @@
     overview: ["Tableau de bord", "Pilotage temps réel : sinistres, sourcing et SLA 24/48 h"],
     dealers: ["Concessionnaires", "Pool de sourcing tous types (VL, VUL, PL, médical) — stock et délais de mise à dispo"],
     fleet: ["Flotte & tracking", "120 véhicules · kilométrage, occupation et score de risque"],
+    maintenance: ["Maintenance & photos", "Fiches d'inspection : photos, état des pièces, mécanicien"],
     claims: ["Sinistres · déblocage en 1 clic", "Identifiez et débloquez un véhicule de remplacement en < 24 h"],
     insurance: ["Assurance & Risque", "Sinistralité, scoring télématique et prime estimée"],
     simulator: ["Simulateur de prime", "Ajustez les paramètres, la prime se recalcule en direct"],
@@ -30,7 +31,7 @@
     map: ["Carte d'activité", "Flotte, réservations et sinistres par ville"],
     report: ["Rapport assureur", "Synthèse prête à présenter à votre compagnie"],
   };
-  const views = { overview: renderOverview, dealers: renderDealers, fleet: renderFleet, claims: renderClaims, insurance: renderInsurance, simulator: renderSimulator, providers: renderProviders, auctions: renderAuctions, livemap: renderLiveMap, bookings: renderBookings, map: renderMap, report: renderReport };
+  const views = { overview: renderOverview, dealers: renderDealers, fleet: renderFleet, maintenance: renderMaintenance, claims: renderClaims, insurance: renderInsurance, simulator: renderSimulator, providers: renderProviders, auctions: renderAuctions, livemap: renderLiveMap, bookings: renderBookings, map: renderMap, report: renderReport };
 
   /* ---------- Timers (compte à rebours live) ---------- */
   let timers = [];
@@ -604,6 +605,11 @@
         ${["Sinistre déclaré", "Solution identifiée", "Concessionnaire mobilisé", "Véhicule livré"].map((s, i) => `
           <div class="jstep ${i <= 3 ? "done" : ""}"><span class="jdot">${i < 3 ? "✓" : "→"}</span><div><b>${s}</b>${i === 2 ? `<span>${m.dealer.name} · ${m.dealer.city}</span>` : i === 3 ? `<span>${m.model} · sous ${m.etaH} h · ${m.distanceKm} km</span>` : ""}</div></div>`).join("")}
       </div>
+      <div class="logi">
+        <div class="logi__pt"><span class="logi__dot logi__dot--start"></span><div><b>Départ</b><span>${m.dealer.name} · ${m.dealer.city}</span></div></div>
+        <div class="logi__line"><span>${m.distanceKm} km · convoyage</span></div>
+        <div class="logi__pt"><span class="logi__dot logi__dot--end"></span><div><b>Livraison</b><span>${claim.city} · ${claim.client}</span></div></div>
+      </div>
       <div class="bm-line total" style="margin-top:1rem"><span>Délai total estimé</span><b>${m.etaH} h ${m.etaH <= claim.slaHours ? "· SLA respecté ✓" : ""}</b></div>
       <button class="btn btn--gold btn--block" data-close style="margin-top:1.2rem;width:100%">Terminer</button>
     `);
@@ -878,6 +884,105 @@
       });
       const kEl = $$(".kpi__val")[3];
       if (kEl) kEl.textContent = minH === Infinity ? "—" : Math.max(0, Math.round(minH)) + " h";
+    });
+  }
+
+  /* ================================================================
+     VUE — Maintenance & photos (inspection véhicule)
+     ================================================================ */
+  const stateTag = (s) => `<span class="tag tag--${s === "Bon" ? "green" : s === "À surveiller" ? "gold" : "red"}">${s}</span>`;
+  const toRepair = (insp) => insp.items.some((it) => it.state === "À remplacer");
+
+  function renderMaintenance() {
+    const dtl = (ms) => new Date(ms).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+    const renderList = () => {
+      const photos = DB.inspections.reduce((s, i) => s + i.photos.length, 0);
+      $("#mtKpis").innerHTML =
+        kpi({ label: "Inspections", value: DB.inspections.length, delta: "fiches enregistrées", up: true, icon: "⚒" }) +
+        kpi({ label: "Véhicules à réparer", value: DB.inspections.filter(toRepair).length, delta: "pièce(s) à remplacer", up: false, icon: "⚠" }) +
+        kpi({ label: "Photos collectées", value: photos, delta: "preuves jointes", up: true, icon: "▣" }) +
+        kpi({ label: "Dernière inspection", value: DB.inspections.length ? dtl(DB.inspections[0].at).split(" ").slice(0, 2).join(" ") : "—", delta: "à jour", up: true, icon: "✓" });
+      sparkAll();
+
+      $("#mtList").innerHTML = DB.inspections.map((insp) => `
+        <div class="card insp">
+          <div class="insp__head">
+            <div><b>${insp.model}</b> <span class="mono" style="font-size:.78rem">${insp.vehicleId} · ${insp.plate} · ${insp.city}</span>
+              <div class="meta" style="color:var(--muted);font-size:.82rem;margin-top:.2rem">${dtl(insp.at)} · ${insp.km || insp.odometer} km · méca. ${insp.mechanic} · chauffeur ${insp.driver}</div>
+            </div>
+            ${toRepair(insp) ? '<span class="tag tag--red">À réparer</span>' : '<span class="tag tag--green">Conforme</span>'}
+          </div>
+          <div class="insp__photos">${insp.photos.map((p) => `<img src="${p}" alt="photo" loading="lazy"/>`).join("")}</div>
+          <div class="insp__items">${insp.items.map((it) => `<div class="insp__item"><span>${it.label}</span>${stateTag(it.state)}</div>`).join("")}</div>
+          ${insp.comment ? `<div class="insp__comment">“${insp.comment}”</div>` : ""}
+        </div>`).join("");
+    };
+
+    view.innerHTML = `
+      <div class="callout" style="background:var(--gold-soft);border-color:rgba(200,164,92,.3)"><span>⚒</span><div><b>Maintenance & traçabilité</b> — à chaque véhicule envoyé, le chauffeur prend des photos et le mécanicien relève l'état des pièces (disques, plaquettes, pneus…). Tout est horodaté et conservé par véhicule.</div></div>
+      <div class="grid kpis" id="mtKpis"></div>
+      <div class="card card--pad" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+        <div><h3 style="font-size:1.05rem">Fiches d'inspection</h3><span class="sub" style="color:var(--muted);font-size:.85rem">photos + état des pièces + mécanicien</span></div>
+        <button class="btn btn--gold" id="newInsp">+ Nouvelle inspection</button>
+      </div>
+      <div class="grid" id="mtList" style="grid-template-columns:repeat(auto-fill,minmax(360px,1fr))"></div>`;
+    renderList();
+    $("#newInsp").addEventListener("click", () => openInspection(renderList));
+  }
+
+  function openInspection(refresh) {
+    const opt = (arr) => arr.map((x) => `<option>${x}</option>`).join("");
+    const vehOpts = DB.fleet.slice(0, 40).map((v) => `<option value="${v.id}">${v.id} · ${v.model} · ${v.plate}</option>`).join("");
+    openModal(`
+      <h3>Nouvelle inspection</h3>
+      <p class="msub">Le chauffeur joint des photos, le mécanicien renseigne l'état des pièces.</p>
+      <form id="inspForm">
+        <div class="bm__row">
+          <div class="bm__field"><label>Véhicule</label><select id="i-veh">${vehOpts}</select></div>
+          <div class="bm__field"><label>Kilométrage relevé</label><input id="i-km" type="number" value="48250" min="0"/></div>
+        </div>
+        <div class="bm__row">
+          <div class="bm__field"><label>Chauffeur / pro</label><input id="i-driver" value="" placeholder="Nom du conducteur"/></div>
+          <div class="bm__field"><label>Mécanicien</label><input id="i-mech" value="" placeholder="Nom du mécanicien"/></div>
+        </div>
+        <label style="font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-2)">Photos du véhicule</label>
+        <label class="photo-drop" for="i-photos">📷 Cliquez pour ajouter des photos (avant, freins, pneus, dommages…)</label>
+        <input id="i-photos" type="file" accept="image/*" multiple hidden/>
+        <div class="photo-grid" id="i-preview"></div>
+        <label style="font-size:.74rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-2);margin-top:.4rem;display:block">État des pièces</label>
+        <div class="insp__items" style="margin:.4rem 0 1rem">
+          ${DB.inspectionItems.map((it, i) => `<div class="insp__item"><span>${it}</span><select class="i-state" data-label="${it}">${opt(DB.inspStates)}</select></div>`).join("")}
+        </div>
+        <div class="bm__field"><label>Commentaire mécanicien</label><textarea id="i-comment" rows="2" placeholder="Observations, pièces à remplacer…"></textarea></div>
+        <div class="bm__error" id="i-err" style="margin-top:.6rem"></div>
+        <button type="submit" class="btn btn--gold btn--block" style="width:100%;margin-top:.6rem">Enregistrer la fiche</button>
+      </form>`);
+
+    const photos = [];
+    $("#i-photos").addEventListener("change", (e) => {
+      [...e.target.files].forEach((f) => {
+        const r = new FileReader();
+        r.onload = () => { photos.push(r.result); $("#i-preview").insertAdjacentHTML("beforeend", `<img src="${r.result}" alt="photo"/>`); };
+        r.readAsDataURL(f);
+      });
+    });
+
+    $("#inspForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const veh = DB.fleet.find((v) => v.id === $("#i-veh").value) || DB.fleet[0];
+      const items = [...dnBody.querySelectorAll(".i-state")].map((s) => ({ label: s.dataset.label, state: s.value }));
+      const insp = {
+        id: "INS-" + Math.floor(5000 + Math.random() * 9000),
+        vehicleId: veh.id, model: veh.model, plate: veh.plate, city: veh.city,
+        mechanic: $("#i-mech").value.trim() || "—", driver: $("#i-driver").value.trim() || "—",
+        km: +$("#i-km").value || veh.odometer, odometer: veh.odometer, at: Date.now(),
+        items, photos: photos.length ? photos.slice() : [DB.photoPh("Sans photo", "#6b7484")],
+        comment: $("#i-comment").value.trim(),
+      };
+      DB.inspections.unshift(insp);
+      try { localStorage.setItem("fleetnavira_inspections_count", DB.inspections.length); } catch (_) {}
+      closeModal(); refresh();
+      toast("Inspection enregistrée ⚒", `${insp.model} · ${insp.photos.length} photo(s) · ${items.filter((i) => i.state === "À remplacer").length} pièce(s) à remplacer.`);
     });
   }
 

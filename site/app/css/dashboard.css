@@ -254,6 +254,37 @@ tr.row-on{background:var(--gold-soft)!important}
 .lm-row__main b{display:block;font-size:.9rem}
 .lm-row__main span{color:var(--muted);font-size:.78rem}
 
+/* ===================== Maintenance / inspections ===================== */
+.insp{padding:16px;display:flex;flex-direction:column;gap:.8rem}
+.insp__head{display:flex;justify-content:space-between;align-items:flex-start;gap:.8rem}
+.insp__head b{font-size:1rem}
+.insp__photos{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem}
+.insp__photos img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
+.insp__items{display:flex;flex-direction:column;gap:.3rem}
+.insp__item{display:flex;justify-content:space-between;align-items:center;gap:.6rem;font-size:.86rem;padding:.35rem .6rem;border:1px solid var(--line);border-radius:8px;background:var(--bg-2)}
+.insp__item span{color:var(--muted)}
+.insp__item select{background:var(--bg);border:1px solid var(--line-2);border-radius:8px;color:var(--text);padding:.25rem .5rem;font-size:.82rem;color-scheme:dark}
+.insp__comment{font-size:.86rem;color:var(--muted);font-style:italic;border-left:2px solid var(--gold);padding-left:.7rem}
+
+.photo-drop{display:block;border:1.5px dashed var(--line-2);border-radius:12px;padding:1rem;text-align:center;color:var(--muted);font-size:.88rem;cursor:pointer;margin:.4rem 0 .6rem;transition:border-color .2s,color .2s}
+.photo-drop:hover{border-color:var(--gold);color:var(--gold-2)}
+.photo-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:.6rem}
+.photo-grid img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;border:1px solid var(--line-2)}
+#inspForm textarea{background:var(--bg-2);border:1px solid var(--line-2);border-radius:10px;color:var(--text);padding:.6rem .8rem;font-family:inherit;font-size:.9rem;outline:none;resize:vertical;width:100%}
+#inspForm textarea:focus{border-color:var(--gold)}
+
+/* ===================== Logistique (départ → arrivée) ===================== */
+.logi{display:flex;align-items:stretch;gap:.6rem;background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-top:1rem}
+.logi__pt{display:flex;align-items:center;gap:.6rem;flex:1}
+.logi__dot{width:12px;height:12px;border-radius:50%;flex:none}
+.logi__dot--start{background:var(--gold);box-shadow:0 0 0 4px var(--gold-soft)}
+.logi__dot--end{background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.logi__pt b{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted-2)}
+.logi__pt span{font-size:.9rem;color:var(--text)}
+.logi__line{display:flex;align-items:center;justify-content:center;position:relative;min-width:90px;color:var(--muted);font-size:.74rem;text-align:center}
+.logi__line::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,var(--gold),var(--green))}
+.logi__line span{position:relative;background:var(--bg-2);padding:0 .4rem}
+
 /* ===================== Modale générique ===================== */
 .dn-modal{position:fixed;inset:0;z-index:200;display:none}
 .dn-modal.open{display:block}
