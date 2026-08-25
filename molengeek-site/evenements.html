@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Événements &amp; actualités — MolenGeek</title>
+  <meta name="description" content="Hackathons, meetups, ateliers découverte et job days : l’agenda complet des événements gratuits du campus MolenGeek.">
+  <meta name="theme-color" content="#ff6a13">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Open Graph / réseaux sociaux -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MolenGeek">
+  <meta property="og:title" content="Événements &amp; actualités — MolenGeek">
+  <meta property="og:description" content="Hackathons, meetups, ateliers découverte et job days : l’agenda complet des événements gratuits du campus MolenGeek.">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu principal</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="MolenGeek — retour à l’accueil">
+        <span class="brand__mark" aria-hidden="true">MG</span>
+        <span>Molen<b>Geek</b></span>
+      </a>
+
+      <nav class="nav" id="primary-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="formations.html">Formations</a>
+        <a href="coworking.html">Coworking &amp; Incubateur</a>
+        <a href="evenements.html">Événements</a>
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
+        <a class="btn btn--primary btn--sm" href="formations.html#candidature">Je postule</a>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+                aria-expanded="false" aria-controls="primary-nav" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================ HERO ============================ -->
+    <section class="hero hero--page">
+      <div class="container hero__grid">
+        <div data-reveal>
+          <p class="eyebrow">Agenda &amp; actualités</p>
+          <h1>Il se passe <span class="text-brand">toujours quelque chose.</span></h1>
+          <p class="lead">
+            Hackathons, meetups, ateliers découverte, job days&nbsp;: la majorité de nos
+            événements sont gratuits et ouverts au public, que vous soyez étudiant·e,
+            en reconversion ou simplement curieux·se.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="#agenda">Voir l’agenda</a>
+            <a class="btn btn--ghost" href="#actualites">Lire les actualités</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================ AGENDA ========================== -->
+    <section class="section" id="agenda">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Prochaines dates</p>
+          <h2>Agenda</h2>
+          <p>Filtrez par type d’événement pour trouver ce qui vous concerne.</p>
+        </header>
+
+        <div class="filters" data-filter-for="events" role="group" aria-label="Filtrer les événements par type">
+          <button class="filter-btn" type="button" data-filter="all" aria-pressed="true">Tout</button>
+          <button class="filter-btn" type="button" data-filter="info" aria-pressed="false">Séances d’info</button>
+          <button class="filter-btn" type="button" data-filter="hackathon" aria-pressed="false">Hackathons</button>
+          <button class="filter-btn" type="button" data-filter="atelier" aria-pressed="false">Ateliers</button>
+          <button class="filter-btn" type="button" data-filter="meetup" aria-pressed="false">Meetups</button>
+          <button class="filter-btn" type="button" data-filter="emploi" aria-pressed="false">Emploi</button>
+        </div>
+
+        <div class="event-list" id="events">
+          <article class="event" data-category="info" data-reveal>
+            <p class="event__date"><span class="event__day">12</span><span class="event__month">Sept</span></p>
+            <div class="event__body">
+              <h3>Séance d’information — rentrée de septembre</h3>
+              <p>Tous les parcours présentés en une heure, suivie d’une visite du campus
+                 et d’un échange avec d’anciens participants.</p>
+              <p class="event__meta"><span>18:00 – 20:00</span><span>Campus Molenbeek</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="atelier" data-reveal data-reveal-delay="60">
+            <p class="event__date"><span class="event__day">18</span><span class="event__month">Sept</span></p>
+            <div class="event__body">
+              <h3>Atelier « Créer son portfolio en une soirée »</h3>
+              <p>Pour les profils tech et créatifs&nbsp;: structurer ses projets et les
+                 publier en ligne avant de partir.</p>
+              <p class="event__meta"><span>18:30 – 21:30</span><span>Ordinateur fourni</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="hackathon" data-reveal data-reveal-delay="120">
+            <p class="event__date"><span class="event__day">27</span><span class="event__month">Sept</span></p>
+            <div class="event__body">
+              <h3>Hackathon « Ville inclusive » — 48h</h3>
+              <p>Deux jours et deux nuits pour prototyper un service numérique utile
+                 au quartier. Mentors et repas sur place.</p>
+              <p class="event__meta"><span>Vendredi 18h → dimanche 18h</span><span>Équipes de 4</span><span>Sur inscription</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="atelier" data-reveal>
+            <p class="event__date"><span class="event__day">09</span><span class="event__month">Oct</span></p>
+            <div class="event__body">
+              <h3>Atelier découverte&nbsp;: écrire ses premières lignes de code</h3>
+              <p>Trois heures pour comprendre ce qu’est le métier de développeur —
+                 sans aucun prérequis.</p>
+              <p class="event__meta"><span>14:00 – 17:00</span><span>Dès 16 ans</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="meetup" data-reveal data-reveal-delay="60">
+            <p class="event__date"><span class="event__day">16</span><span class="event__month">Oct</span></p>
+            <div class="event__body">
+              <h3>Meetup JavaScript Bruxelles</h3>
+              <p>Deux conférences courtes et un temps d’échange, hébergés dans
+                 l’auditorium du campus.</p>
+              <p class="event__meta"><span>19:00 – 22:00</span><span>Auditorium</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="emploi" data-reveal data-reveal-delay="120">
+            <p class="event__date"><span class="event__day">24</span><span class="event__month">Oct</span></p>
+            <div class="event__body">
+              <h3>Job Day — rencontres avec nos entreprises partenaires</h3>
+              <p>Entretiens éclair de 15 minutes avec des recruteurs du secteur tech.
+                 Ouvert aux alumni et aux profils juniors.</p>
+              <p class="event__meta"><span>10:00 – 16:00</span><span>CV conseillé</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-category="info" data-reveal>
+            <p class="event__date"><span class="event__day">07</span><span class="event__month">Nov</span></p>
+            <div class="event__body">
+              <h3>Portes ouvertes de l’incubateur</h3>
+              <p>Présentation du programme d’accompagnement et rencontre avec les
+                 projets de la promotion en cours.</p>
+              <p class="event__meta"><span>17:00 – 20:00</span><span>Porteurs de projet</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="contact.html">S’inscrire</a></p>
+          </article>
+        </div>
+
+        <p class="empty-state" data-empty-for="events" hidden>
+          Aucun événement de ce type n’est programmé pour l’instant. Revenez bientôt&nbsp;!
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================== ACTUALITÉS ======================== -->
+    <section class="section section--alt" id="actualites">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Actualités</p>
+          <h2>Les nouvelles du campus</h2>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card" data-reveal>
+            <span class="badge">Formation</span>
+            <h3 style="margin-top:.6rem;">Une nouvelle promotion cybersécurité</h3>
+            <p>Vingt-cinq places supplémentaires ouvertes cette année pour répondre
+               à la demande des entreprises de la région.</p>
+            <p class="course__meta"><span>3 min de lecture</span></p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="90">
+            <span class="badge">Communauté</span>
+            <h3 style="margin-top:.6rem;">Retour sur le hackathon du printemps</h3>
+            <p>Seize équipes, un week-end, et trois prototypes désormais accompagnés
+               par l’incubateur.</p>
+            <p class="course__meta"><span>4 min de lecture</span></p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="180">
+            <span class="badge">Partenariats</span>
+            <h3 style="margin-top:.6rem;">Un studio de création ouvert au quartier</h3>
+            <p>Le studio photo et podcast est désormais accessible gratuitement aux
+               associations locales, sur réservation.</p>
+            <p class="course__meta"><span>2 min de lecture</span></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== NEWSLETTER CTA ====================== -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-banner" data-reveal>
+          <h2>Ne ratez plus une date</h2>
+          <p>Un e-mail par mois, l’agenda complet et les ouvertures de candidatures.
+             Désinscription en un clic.</p>
+          <div class="btn-row">
+            <a class="btn btn--light" href="contact.html">S’abonner à la newsletter</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html">
+            <span class="brand__mark" aria-hidden="true">MG</span>
+            <span>Molen<b>Geek</b></span>
+          </a>
+          <p>Un écosystème tech ouvert à toutes et tous : formations gratuites, coworking
+             et incubation de startups, au cœur de Molenbeek.</p>
+          <div class="social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Explorer</h4>
+          <ul class="footer-links">
+            <li><a href="formations.html">Formations</a></li>
+            <li><a href="coworking.html">Coworking</a></li>
+            <li><a href="coworking.html#incubateur">Incubateur</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>MolenGeek</h4>
+          <ul class="footer-links">
+            <li><a href="a-propos.html">Notre histoire</a></li>
+            <li><a href="a-propos.html#equipe">L’équipe</a></li>
+            <li><a href="a-propos.html#partenaires">Partenaires</a></li>
+            <li><a href="contact.html">Nous contacter</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li>Rue Osseghem 53<br>1080 Molenbeek-Saint-Jean</li>
+            <li><a href="mailto:hello@molengeek.example">hello@molengeek.example</a></li>
+            <li><a href="tel:+3220000000">+32 2 000 00 00</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> MolenGeek — Site de démonstration.</p>
+        <p><a href="#main">Retour en haut ↑</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

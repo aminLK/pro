@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# À adapter avec le domaine définitif avant mise en ligne.
+Sitemap: https://www.example.org/sitemap.xml
