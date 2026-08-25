@@ -30,11 +30,14 @@ molengeek-site/
 ├── evenements.html     # Agenda filtrable + actualités
 ├── a-propos.html       # Mission, histoire, impact, équipe, partenaires
 ├── contact.html        # Formulaire, coordonnées, FAQ
+├── hackathon.html      # Landing d'événement autonome (thème sombre, style « event »)
 ├── robots.txt
 ├── sitemap.xml
 └── assets/
-    ├── css/style.css   # Design system complet (tokens, composants, responsive, thème sombre)
+    ├── css/style.css   # Design system du site (tokens, composants, responsive, thème sombre)
+    ├── css/event.css   # Design autonome de la landing événement
     ├── js/main.js      # Thème, navigation, révélations, compteurs, filtres, validation
+    ├── js/event.js     # Compte à rebours, agenda à onglets, marquee, barre collante
     └── img/            # Logo et favicon (SVG)
 ```
 
@@ -52,6 +55,36 @@ ce qui évite tout build et garde le site fonctionnel sans JavaScript.
 | Compteurs animés | accueil, à propos | Attribut `data-count`, formatage `fr-BE` |
 | Filtres | formations, événements | Générique : `data-filter-for` + `data-category`, état vide géré |
 | Validation de formulaire | formations, contact | Messages en français, `aria-invalid`, focus sur le premier champ fautif |
+
+## La landing événement (`hackathon.html`)
+
+Page autonome au style volontairement différent du reste du site : thème sombre
+permanent, typographie display surdimensionnée, halos colorés et grain. Elle ne
+partage ni `style.css` ni `main.js` — tout est dans `event.css` et `event.js`,
+sous le préfixe `.ev` — on peut donc la retravailler sans aucun risque pour les
+six autres pages.
+
+Ce qu'elle contient : navigation flottante en pilule, compte à rebours en direct,
+bandeau de partenaires défilant, grille bento, programme sur trois jours en
+onglets (pattern ARIA `tablist`, navigation aux flèches), grille de mentors,
+trois formules d'inscription, FAQ en accordéon et barre d'inscription collante
+sur mobile.
+
+**Le compte à rebours ne périme jamais.** Plutôt qu'une date figée, il vise le
+dernier vendredi du mois choisi, et bascule automatiquement sur l'année suivante
+une fois la date passée :
+
+```html
+<div data-countdown data-target-month="9" data-target-weekday="5" data-target-hour="18">
+  <span data-unit="days">00</span> <span data-unit="hours">00</span>
+  <span data-unit="minutes">00</span> <span data-unit="seconds">00</span>
+</div>
+```
+
+`data-target-weekday` suit la convention JavaScript (0 = dimanche, 5 = vendredi).
+L'élément portant `data-countdown-date` reçoit la date complète en toutes lettres.
+Pour une date fixe et définitive, remplacez `nextOccurrence()` dans `event.js` par
+un `new Date(...)` explicite.
 
 ### Ajouter un filtre
 

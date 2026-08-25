@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hackathon Ville Inclusive — MolenGeek</title>
+  <meta name="description" content="48 heures pour prototyper des services numériques utiles au quartier. Hackathon gratuit organisé par MolenGeek à Molenbeek-Saint-Jean : mentors, repas, matériel et jury de professionnels.">
+  <meta name="theme-color" content="#07070c">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MolenGeek">
+  <meta property="og:title" content="Hackathon Ville Inclusive — MolenGeek">
+  <meta property="og:description" content="48 heures, des équipes de quatre, des mentors et un quartier à améliorer. Participation gratuite.">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/event.css">
+  <script src="assets/js/event.js" defer></script>
+</head>
+<body class="ev">
+  <a class="ev-skip" href="#ev-main">Aller au contenu principal</a>
+
+  <!-- ====================== NAVIGATION FLOTTANTE ===================== -->
+  <nav class="ev-nav" aria-label="Navigation de l’événement">
+    <a class="ev-brand" href="index.html">
+      <span class="ev-brand__mark" aria-hidden="true">MG</span>
+      <span>Ville&nbsp;Inclusive</span>
+    </a>
+
+    <div class="ev-nav__links" id="ev-nav-links">
+      <a href="#pourquoi">Pourquoi venir</a>
+      <a href="#agenda">Programme</a>
+      <a href="#mentors">Mentors</a>
+      <a href="#inscription">Inscription</a>
+      <a href="#faq">FAQ</a>
+      <a href="index.html">← Site MolenGeek</a>
+    </div>
+
+    <div class="ev-nav__actions">
+      <a class="ev-btn ev-btn--primary ev-btn--sm" href="#inscription">Réserver ma place</a>
+      <button class="ev-burger" type="button" data-ev-burger
+              aria-expanded="false" aria-controls="ev-nav-links" aria-label="Ouvrir le menu">☰</button>
+    </div>
+  </nav>
+
+  <main id="ev-main">
+    <!-- ============================= HERO ============================ -->
+    <header class="ev-hero ev-grain">
+      <span class="ev-glow ev-glow--orange" aria-hidden="true"></span>
+      <span class="ev-glow ev-glow--violet" aria-hidden="true"></span>
+      <span class="ev-glow ev-glow--cyan" aria-hidden="true"></span>
+
+      <div class="ev-container">
+        <p class="ev-hero__badge" data-ev-reveal>
+          <b>Inscriptions ouvertes</b>
+          <span>48 heures · 120 places · participation gratuite</span>
+        </p>
+
+        <h1 data-ev-reveal data-ev-delay="80">
+          48 heures pour coder<br><span class="ev-grad">la ville de demain</span>
+        </h1>
+
+        <p class="ev-hero__lead" data-ev-reveal data-ev-delay="160">
+          Un week-end, des équipes de quatre, des mentors du secteur et un seul
+          objectif&nbsp;: transformer un problème du quartier en prototype qui fonctionne.
+          Aucun niveau minimum requis — on vient avec une idée, on repart avec un projet.
+        </p>
+
+        <div class="ev-btn-row" data-ev-reveal data-ev-delay="240">
+          <a class="ev-btn ev-btn--primary" href="#inscription">Je participe</a>
+          <a class="ev-btn ev-btn--ghost" href="#agenda">Voir le programme</a>
+        </div>
+
+        <p class="ev-hero__meta" data-ev-reveal data-ev-delay="320">
+          <span>📅 <span data-countdown-date>Vendredi 27 septembre</span></span>
+          <span>📍 Campus MolenGeek, Molenbeek-Saint-Jean</span>
+          <span>🎟️ Gratuit, sur sélection</span>
+        </p>
+
+        <div class="ev-countdown" data-countdown data-target-month="9" data-target-weekday="5" data-target-hour="18"
+             data-ev-reveal data-ev-delay="400">
+          <p class="ev-count"><span class="ev-count__value" data-unit="days">00</span><span class="ev-count__label">Jours</span></p>
+          <p class="ev-count"><span class="ev-count__value" data-unit="hours">00</span><span class="ev-count__label">Heures</span></p>
+          <p class="ev-count"><span class="ev-count__value" data-unit="minutes">00</span><span class="ev-count__label">Minutes</span></p>
+          <p class="ev-count"><span class="ev-count__value" data-unit="seconds">00</span><span class="ev-count__label">Secondes</span></p>
+        </div>
+      </div>
+    </header>
+
+    <!-- =========================== MARQUEE =========================== -->
+    <section class="ev-marquee" aria-label="Partenaires de l’événement">
+      <div class="ev-marquee__track">
+        <div class="ev-marquee__group">
+          <span class="ev-marquee__item">Entreprises tech</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Opérateurs télécom</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Région bruxelloise</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Commune de Molenbeek</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Fondations privées</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Associations locales</span>
+          <span class="ev-marquee__item">◆</span>
+          <span class="ev-marquee__item">Écoles &amp; universités</span>
+          <span class="ev-marquee__item">◆</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== POURQUOI =========================== -->
+    <section class="ev-section" id="pourquoi">
+      <span class="ev-glow ev-glow--violet" style="top: 10%; right: -280px; opacity:.35;" aria-hidden="true"></span>
+
+      <div class="ev-container">
+        <header class="ev-head" data-ev-reveal>
+          <p class="ev-eyebrow">Pourquoi venir</p>
+          <h2>Ce n’est pas un concours de code.<br>C’est un banc d’essai.</h2>
+          <p>On ne cherche pas la ligne la plus élégante, mais l’idée la plus utile
+             aux gens qui vivent ici — et une équipe capable de la montrer en 48h.</p>
+        </header>
+
+        <div class="ev-bento">
+          <article class="ev-card ev-card--accent ev-card--wide" data-ev-reveal>
+            <p class="ev-card__icon" aria-hidden="true">🧩</p>
+            <h3>Des défis venus du terrain</h3>
+            <p>Les sujets sont proposés par des associations, des commerçants et des
+               services communaux du quartier. Mobilité, accès aux droits, soutien
+               scolaire, commerce local&nbsp;: vous choisissez le vôtre le vendredi soir.</p>
+          </article>
+
+          <article class="ev-card" data-ev-reveal data-ev-delay="80">
+            <p class="ev-card__num">48<span>h</span></p>
+            <p>De la constitution des équipes au pitch final, chronomètre en main.</p>
+          </article>
+
+          <article class="ev-card" data-ev-reveal data-ev-delay="120">
+            <p class="ev-card__num">16</p>
+            <p>Mentors disponibles en continu&nbsp;: dev, design, data, produit, pitch.</p>
+          </article>
+
+          <article class="ev-card" data-ev-reveal data-ev-delay="160">
+            <p class="ev-card__icon" aria-hidden="true">🍽️</p>
+            <h3>Tout est pris en charge</h3>
+            <p>Repas, boissons, coin repos, écrans et matériel prêté sur place.</p>
+          </article>
+
+          <article class="ev-card" data-ev-reveal data-ev-delay="200">
+            <p class="ev-card__icon" aria-hidden="true">🚀</p>
+            <h3>Une suite possible</h3>
+            <p>Les projets les plus aboutis rejoignent l’incubateur MolenGeek pour
+               six mois d’accompagnement.</p>
+          </article>
+
+          <article class="ev-card ev-card--full" data-ev-reveal data-ev-delay="240">
+            <p class="ev-card__icon" aria-hidden="true">👥</p>
+            <h3>Vous venez seul·e&nbsp;? Parfait.</h3>
+            <p>Une session de constitution d’équipes est organisée dès l’ouverture&nbsp;:
+               développeurs, designers, profils métier et curieux se répartissent en
+               groupes équilibrés. Personne ne reste sur le côté.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== AGENDA ============================ -->
+    <section class="ev-section" id="agenda" style="background: var(--ink-2); border-block: 1px solid var(--line);">
+      <div class="ev-container">
+        <header class="ev-head" data-ev-reveal>
+          <p class="ev-eyebrow">Programme</p>
+          <h2>Trois jours, une seule ligne droite</h2>
+          <p>Le déroulé complet, du premier café au verdict du jury.</p>
+        </header>
+
+        <div class="ev-tabs" role="tablist" aria-label="Programme par journée" data-ev-reveal>
+          <button class="ev-tab" type="button" role="tab" id="tab-j1" aria-controls="panel-j1" aria-selected="true">Vendredi · Coup d’envoi</button>
+          <button class="ev-tab" type="button" role="tab" id="tab-j2" aria-controls="panel-j2" aria-selected="false" tabindex="-1">Samedi · Construction</button>
+          <button class="ev-tab" type="button" role="tab" id="tab-j3" aria-controls="panel-j3" aria-selected="false" tabindex="-1">Dimanche · Pitchs</button>
+        </div>
+
+        <div id="panel-j1" role="tabpanel" aria-labelledby="tab-j1" class="ev-panel" tabindex="0" data-ev-reveal>
+          <div class="ev-slot">
+            <p class="ev-slot__time">17:00</p>
+            <div><h3>Accueil et badges</h3><p>Café, visite du campus et installation des postes.</p><span class="ev-chip">Hall d’entrée</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">18:00</p>
+            <div><h3>Présentation des défis</h3><p>Les porteurs de sujets expliquent leur problème en cinq minutes chacun.</p><span class="ev-chip">Auditorium</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">19:30</p>
+            <div><h3>Constitution des équipes</h3><p>Format speed-dating&nbsp;: chacun présente ses compétences et son défi préféré.</p><span class="ev-chip">Ouvert à tous</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">20:30</p>
+            <div><h3>Dîner et cadrage</h3><p>Premier point avec un mentor pour délimiter le périmètre réaliste du week-end.</p><span class="ev-chip">Repas offert</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">22:00</p>
+            <div><h3>Début du chrono</h3><p>Les 48 heures démarrent officiellement. Le campus reste ouvert toute la nuit.</p><span class="ev-chip">Nuit blanche possible</span></div>
+          </div>
+        </div>
+
+        <div id="panel-j2" role="tabpanel" aria-labelledby="tab-j2" class="ev-panel" tabindex="0" hidden>
+          <div class="ev-slot">
+            <p class="ev-slot__time">09:00</p>
+            <div><h3>Petit-déjeuner et point d’équipe</h3><p>Chaque groupe annonce son objectif de la journée en une phrase.</p><span class="ev-chip">Repas offert</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">11:00</p>
+            <div><h3>Atelier — tester son idée sur de vrais utilisateurs</h3><p>Méthode d’entretien rapide, puis sortie sur le terrain avec des habitants volontaires.</p><span class="ev-chip">Optionnel</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">14:00</p>
+            <div><h3>Revue de mi-parcours</h3><p>Vingt minutes par équipe avec deux mentors&nbsp;: ce qui tient, ce qu’il faut couper.</p><span class="ev-chip">Obligatoire</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">17:00</p>
+            <div><h3>Atelier — préparer un pitch qui tient en 3 minutes</h3><p>Structure du récit, démonstration en direct, gestion du trac.</p><span class="ev-chip">Auditorium</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">20:00</p>
+            <div><h3>Dîner et session libre</h3><p>Le studio et les salles de réunion restent accessibles jusqu’au bout de la nuit.</p><span class="ev-chip">Repas offert</span></div>
+          </div>
+        </div>
+
+        <div id="panel-j3" role="tabpanel" aria-labelledby="tab-j3" class="ev-panel" tabindex="0" hidden>
+          <div class="ev-slot">
+            <p class="ev-slot__time">09:00</p>
+            <div><h3>Dernière ligne droite</h3><p>Gel du code à 12:00 précises — tout ce qui n’est pas déployé ne sera pas montré.</p><span class="ev-chip">Chrono visible</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">12:00</p>
+            <div><h3>Dépôt des projets</h3><p>Lien du dépôt, démonstration et une capture d’écran par équipe.</p><span class="ev-chip">Deadline stricte</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">13:30</p>
+            <div><h3>Pitchs devant le jury</h3><p>Trois minutes de présentation, trois minutes de questions, sans exception.</p><span class="ev-chip">Auditorium</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">16:30</p>
+            <div><h3>Délibération et remise des prix</h3><p>Trois catégories&nbsp;: impact quartier, faisabilité technique et coup de cœur du public.</p><span class="ev-chip">Ouvert au public</span></div>
+          </div>
+          <div class="ev-slot">
+            <p class="ev-slot__time">18:00</p>
+            <div><h3>Clôture</h3><p>Verre de fin et rencontre avec l’équipe de l’incubateur pour les projets qui continuent.</p><span class="ev-chip">Sans inscription</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== MENTORS =========================== -->
+    <section class="ev-section" id="mentors">
+      <div class="ev-container">
+        <header class="ev-head" data-ev-reveal>
+          <p class="ev-eyebrow">Mentors &amp; jury</p>
+          <h2>Seize personnes disponibles<br>tout le week-end</h2>
+          <p>Des professionnels en activité, présents sur place — pas seulement pour
+             la photo du samedi matin.</p>
+        </header>
+
+        <div class="ev-people">
+          <article class="ev-person" data-ev-reveal>
+            <p class="ev-person__avatar" aria-hidden="true">SB</p>
+            <h3>Sara B.</h3>
+            <p>Développeuse front-end · alumni MolenGeek</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="60">
+            <p class="ev-person__avatar" aria-hidden="true">YE</p>
+            <h3>Youssef E.</h3>
+            <p>Cofondateur de startup · incubateur</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="120">
+            <p class="ev-person__avatar" aria-hidden="true">LM</p>
+            <h3>Leïla M.</h3>
+            <p>Designer produit · freelance</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="180">
+            <p class="ev-person__avatar" aria-hidden="true">TK</p>
+            <h3>Thomas K.</h3>
+            <p>Ingénieur data · secteur public</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="240">
+            <p class="ev-person__avatar" aria-hidden="true">NA</p>
+            <h3>Nadia A.</h3>
+            <p>Coach pitch · accompagnement d’équipes</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="300">
+            <p class="ev-person__avatar" aria-hidden="true">DR</p>
+            <h3>David R.</h3>
+            <p>Développeur back-end · mentor bénévole</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="360">
+            <p class="ev-person__avatar" aria-hidden="true">FZ</p>
+            <h3>Fatima Z.</h3>
+            <p>Cheffe de projet · association de quartier</p>
+          </article>
+          <article class="ev-person" data-ev-reveal data-ev-delay="420">
+            <p class="ev-person__avatar" aria-hidden="true">+9</p>
+            <h3>Et neuf autres</h3>
+            <p>La liste complète est publiée deux semaines avant l’événement.</p>
+          </article>
+        </div>
+
+        <p style="margin-top: 1.5rem; color: var(--text-dim); font-size: .9rem;">
+          Noms d’exemple pour la démonstration — à remplacer par les vrais mentors,
+          avec leur accord.
+        </p>
+      </div>
+    </section>
+
+    <!-- ========================= INSCRIPTION ========================= -->
+    <section class="ev-section" id="inscription" style="background: var(--ink-2); border-block: 1px solid var(--line);">
+      <span class="ev-glow ev-glow--orange" style="bottom: -300px; left: 50%; margin-left: -310px; opacity:.3;" aria-hidden="true"></span>
+
+      <div class="ev-container">
+        <header class="ev-head ev-head--center" data-ev-reveal>
+          <p class="ev-eyebrow">Inscription</p>
+          <h2>Choisissez votre formule</h2>
+          <p>La participation est gratuite. Les places sont limitées à 120 personnes,
+             attribuées dans l’ordre d’arrivée des dossiers complets.</p>
+        </header>
+
+        <div class="ev-tickets">
+          <article class="ev-card ev-ticket" data-ev-reveal>
+            <h3>Visiteur</h3>
+            <p class="ev-ticket__price">0 €<small>Dimanche après-midi uniquement</small></p>
+            <ul>
+              <li>Accès aux pitchs et à la remise des prix</li>
+              <li>Rencontre avec les équipes</li>
+              <li>Vote pour le coup de cœur du public</li>
+              <li>Sans sélection préalable</li>
+            </ul>
+            <a class="ev-btn ev-btn--ghost" href="contact.html">Réserver une place</a>
+          </article>
+
+          <article class="ev-card ev-ticket ev-ticket--featured" data-ev-reveal data-ev-delay="90">
+            <span class="ev-ticket__tag">Le plus demandé</span>
+            <h3>Participant</h3>
+            <p class="ev-ticket__price">0 €<small>Les 48 heures complètes</small></p>
+            <ul>
+              <li>Place en équipe de quatre</li>
+              <li>Accès continu aux seize mentors</li>
+              <li>Repas, boissons et coin repos</li>
+              <li>Poste de travail et écran fournis</li>
+              <li>Certificat de participation</li>
+            </ul>
+            <a class="ev-btn ev-btn--primary" href="contact.html">Déposer ma candidature</a>
+          </article>
+
+          <article class="ev-card ev-ticket" data-ev-reveal data-ev-delay="180">
+            <h3>Équipe constituée</h3>
+            <p class="ev-ticket__price">0 €<small>Jusqu’à cinq personnes</small></p>
+            <ul>
+              <li>Tout ce qu’inclut la formule Participant</li>
+              <li>Table réservée pour l’équipe</li>
+              <li>Mentor attitré sur les deux jours</li>
+              <li>Un seul dossier pour tout le groupe</li>
+            </ul>
+            <a class="ev-btn ev-btn--ghost" href="contact.html">Inscrire mon équipe</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= FAQ ============================= -->
+    <section class="ev-section" id="faq">
+      <div class="ev-container">
+        <header class="ev-head ev-head--center" data-ev-reveal>
+          <p class="ev-eyebrow">FAQ</p>
+          <h2>Les questions qui reviennent</h2>
+        </header>
+
+        <div class="ev-faq" data-ev-reveal>
+          <details>
+            <summary>Faut-il savoir programmer&nbsp;?</summary>
+            <p>Non. Une bonne équipe mélange des profils&nbsp;: développement, design,
+               mais aussi terrain, langues et sens du récit. Beaucoup de participants
+               écrivent leurs premières lignes de code pendant le week-end.</p>
+          </details>
+          <details>
+            <summary>Je n’ai pas d’équipe, puis-je m’inscrire&nbsp;?</summary>
+            <p>Oui, c’est même le cas de la moitié des participants. La session du
+               vendredi soir est faite pour ça.</p>
+          </details>
+          <details>
+            <summary>Faut-il rester dormir sur place&nbsp;?</summary>
+            <p>Non. Le campus reste ouvert la nuit pour ceux qui le souhaitent, mais
+               rien n’oblige à y rester — un coin repos est prévu pour les siestes.</p>
+          </details>
+          <details>
+            <summary>À qui appartient le projet à la fin&nbsp;?</summary>
+            <p>À son équipe, intégralement. MolenGeek ne prend aucune part et ne
+               revendique aucun droit sur ce qui est produit pendant le week-end.</p>
+          </details>
+          <details>
+            <summary>Faut-il apporter son matériel&nbsp;?</summary>
+            <p>Si vous avez votre ordinateur, prenez-le. Sinon, des postes équipés
+               sont mis à disposition — précisez-le dans le dossier d’inscription.</p>
+          </details>
+          <details>
+            <summary>Y a-t-il une limite d’âge&nbsp;?</summary>
+            <p>Il faut avoir 16 ans révolus. Les mineurs fournissent une autorisation
+               parentale à l’accueil.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== CTA FINAL ========================== -->
+    <section class="ev-section" style="padding-top: 0;">
+      <div class="ev-container">
+        <div class="ev-final ev-grain" data-ev-reveal>
+          <h2>Il reste des places.<br>Pas beaucoup.</h2>
+          <p style="max-width: 52ch; margin-inline: auto; color: var(--text-soft);">
+            120 participants, 30 équipes, un week-end. Les dossiers sont traités dans
+            l’ordre d’arrivée — dix minutes suffisent pour déposer le vôtre.
+          </p>
+          <div class="ev-btn-row" style="margin-top: 2rem;">
+            <a class="ev-btn ev-btn--primary" href="contact.html">Déposer ma candidature</a>
+            <a class="ev-btn ev-btn--ghost" href="evenements.html">Voir les autres événements</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================ FOOTER ============================ -->
+  <footer class="ev-footer">
+    <div class="ev-container">
+      <div class="ev-footer__grid">
+        <div>
+          <a class="ev-brand" href="index.html">
+            <span class="ev-brand__mark" aria-hidden="true">MG</span>
+            <span>MolenGeek</span>
+          </a>
+          <p style="color: var(--text-soft); margin-top: 1rem; max-width: 40ch;">
+            Hackathon « Ville Inclusive », organisé sur le campus MolenGeek à
+            Molenbeek-Saint-Jean. Entrée libre, sélection sur dossier.
+          </p>
+        </div>
+
+        <div>
+          <h4>L’événement</h4>
+          <ul>
+            <li><a href="#pourquoi">Pourquoi venir</a></li>
+            <li><a href="#agenda">Programme</a></li>
+            <li><a href="#mentors">Mentors</a></li>
+            <li><a href="#inscription">Inscription</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>MolenGeek</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="formations.html">Formations</a></li>
+            <li><a href="coworking.html">Coworking</a></li>
+            <li><a href="a-propos.html">À propos</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li>Rue Osseghem 53<br>1080 Molenbeek-Saint-Jean</li>
+            <li><a href="mailto:hello@molengeek.example">hello@molengeek.example</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ev-footer__bottom">
+        <p>© <span data-year>2026</span> MolenGeek — page de démonstration.</p>
+        <p><a href="#ev-main">Retour en haut ↑</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================== BARRE COLLANTE MOBILE ==================== -->
+  <div class="ev-sticky-cta" aria-hidden="false">
+    <p><strong>Ville Inclusive</strong><span>Participation gratuite</span></p>
+    <a class="ev-btn ev-btn--primary ev-btn--sm" href="#inscription">Je participe</a>
+  </div>
+</body>
+</html>
