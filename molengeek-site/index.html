@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MolenGeek — Formations tech gratuites, coworking et incubateur à Bruxelles</title>
+  <meta name="description" content="MolenGeek rend la tech accessible à tous : formations gratuites en développement, data et cybersécurité, espace de coworking et incubateur de startups à Molenbeek-Saint-Jean.">
+  <meta name="theme-color" content="#ff6a13">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Open Graph / réseaux sociaux -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MolenGeek">
+  <meta property="og:title" content="MolenGeek — Formations tech gratuites, coworking et incubateur à Bruxelles">
+  <meta property="og:description" content="MolenGeek rend la tech accessible à tous : formations gratuites en développement, data et cybersécurité, espace de coworking et incubateur de startups à Molenbeek-Saint-Jean.">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu principal</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="MolenGeek — retour à l’accueil">
+        <span class="brand__mark" aria-hidden="true">MG</span>
+        <span>Molen<b>Geek</b></span>
+      </a>
+
+      <nav class="nav" id="primary-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="formations.html">Formations</a>
+        <a href="coworking.html">Coworking &amp; Incubateur</a>
+        <a href="evenements.html">Événements</a>
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
+        <a class="btn btn--primary btn--sm" href="formations.html#candidature">Je postule</a>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+                aria-expanded="false" aria-controls="primary-nav" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================ HERO ============================ -->
+    <section class="hero">
+      <div class="container hero__grid">
+        <div data-reveal>
+          <p class="eyebrow">Molenbeek-Saint-Jean · Bruxelles</p>
+          <h1>La tech, <span class="text-brand">sans ticket d’entrée.</span></h1>
+          <p class="lead">
+            MolenGeek forme, accompagne et connecte celles et ceux que le numérique
+            oublie trop souvent. Formations gratuites, espace de coworking ouvert et
+            incubateur de startups — sans diplôme requis, sans frais d’inscription.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="formations.html">Découvrir les formations</a>
+            <a class="btn btn--ghost" href="coworking.html">Visiter le coworking</a>
+          </div>
+        </div>
+
+        <aside class="hero-card" data-reveal data-reveal-delay="120">
+          <p class="badge badge--live">Inscriptions ouvertes</p>
+          <h2>Prochaine rentrée&nbsp;: septembre</h2>
+          <p style="color: var(--text-invert-soft);">
+            Trois parcours démarrent en même temps. Une séance d’information est
+            organisée chaque jeudi à 18h sur le campus.
+          </p>
+          <ul>
+            <li>Développement web full-stack — 6 mois</li>
+            <li>Data &amp; Intelligence artificielle — 5 mois</li>
+            <li>Cybersécurité — 4 mois</li>
+            <li>100&nbsp;% gratuit, matériel fourni sur place</li>
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--light" href="formations.html#candidature">Réserver ma place</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ========================== STATISTIQUES ====================== -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="stats" data-reveal>
+          <div class="stat">
+            <p class="stat__value"><span data-count="4200" data-count-suffix="+">0</span></p>
+            <p class="stat__label">personnes formées depuis 2015</p>
+          </div>
+          <div class="stat">
+            <p class="stat__value"><span data-count="12">0</span></p>
+            <p class="stat__label">parcours de formation certifiants</p>
+          </div>
+          <div class="stat">
+            <p class="stat__value"><span data-count="70" data-count-suffix="%">0</span></p>
+            <p class="stat__label">de sorties positives (emploi ou projet)</p>
+          </div>
+          <div class="stat">
+            <p class="stat__value"><span data-count="130" data-count-suffix="+">0</span></p>
+            <p class="stat__label">startups accompagnées</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== PILIERS ========================== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Notre écosystème</p>
+          <h2>Trois portes d’entrée, une seule communauté</h2>
+          <p>Que vous vouliez apprendre à coder, trouver un bureau ou lancer votre
+             produit, tout se passe sous le même toit.</p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card" data-reveal>
+            <p class="card__icon" aria-hidden="true">🎓</p>
+            <h3>L’école</h3>
+            <p>Des formations intensives et gratuites en développement, data, cybersécurité
+               et design. Sélection sur la motivation, pas sur le CV.</p>
+            <p><a class="btn btn--ghost btn--sm" href="formations.html">Voir le catalogue</a></p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="90">
+            <p class="card__icon" aria-hidden="true">💻</p>
+            <h3>Le coworking</h3>
+            <p>900&nbsp;m² de bureaux, salles de réunion et studio, ouverts aux freelances,
+               associations et jeunes entreprises du quartier.</p>
+            <p><a class="btn btn--ghost btn--sm" href="coworking.html">Voir les formules</a></p>
+          </article>
+
+          <article class="card" data-reveal data-reveal-delay="180">
+            <p class="card__icon" aria-hidden="true">🚀</p>
+            <h3>L’incubateur</h3>
+            <p>Six mois d’accompagnement pour transformer une idée en produit&nbsp;:
+               mentorat, prototypage, mise en relation avec nos partenaires.</p>
+            <p><a class="btn btn--ghost btn--sm" href="coworking.html#incubateur">Rejoindre le programme</a></p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================== APERÇU FORMATIONS ===================== -->
+    <section class="section">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Formations phares</p>
+          <h2>On apprend en construisant</h2>
+          <p>Pas de cours magistraux&nbsp;: des projets réels, en équipe, encadrés par des
+             professionnels du secteur.</p>
+        </header>
+
+        <div class="grid grid--3">
+          <article class="card course" data-reveal>
+            <div class="course__top">
+              <h3>Développement web full-stack</h3>
+              <span class="badge">6 mois</span>
+            </div>
+            <p>HTML/CSS, JavaScript, React, Node.js, bases de données et déploiement.
+               Le parcours le plus demandé.</p>
+            <p class="course__meta">
+              <span>🕘 Temps plein</span><span>📍 Molenbeek</span><span>🎯 Débutant accepté</span>
+            </p>
+          </article>
+
+          <article class="card course" data-reveal data-reveal-delay="90">
+            <div class="course__top">
+              <h3>Data &amp; Intelligence artificielle</h3>
+              <span class="badge">5 mois</span>
+            </div>
+            <p>Python, SQL, visualisation, machine learning et mise en production
+               de modèles avec des jeux de données réels.</p>
+            <p class="course__meta">
+              <span>🕘 Temps plein</span><span>📍 Molenbeek</span><span>🎯 Bases en maths</span>
+            </p>
+          </article>
+
+          <article class="card course" data-reveal data-reveal-delay="180">
+            <div class="course__top">
+              <h3>Cybersécurité</h3>
+              <span class="badge">4 mois</span>
+            </div>
+            <p>Réseaux, systèmes, analyse de vulnérabilités et bonnes pratiques
+               défensives, avec un laboratoire d’exercices.</p>
+            <p class="course__meta">
+              <span>🕘 Temps plein</span><span>📍 Molenbeek</span><span>🎯 Débutant accepté</span>
+            </p>
+          </article>
+        </div>
+
+        <div class="btn-row" data-reveal>
+          <a class="btn btn--primary" href="formations.html">Toutes les formations</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================== POURQUOI ========================== -->
+    <section class="section section--alt">
+      <div class="container split">
+        <div class="split__media" data-reveal>
+          <div class="media-frame">
+            <p class="media-frame__inner">« Le talent est partout,<br>les opportunités non. »</p>
+          </div>
+        </div>
+        <div data-reveal data-reveal-delay="120">
+          <p class="eyebrow">Pourquoi MolenGeek</p>
+          <h2>Un modèle pensé pour lever les vrais obstacles</h2>
+          <p class="lead">Ce qui bloque rarement, c’est l’envie. Ce sont les frais,
+             les prérequis, la garde d’enfants, le manque de réseau.</p>
+          <ul class="checklist">
+            <li><span><strong>Gratuité totale.</strong> Aucune formation n’est payante, matériel compris.</span></li>
+            <li><span><strong>Aucun diplôme requis.</strong> On recrute sur la motivation et un test logique.</span></li>
+            <li><span><strong>Un vrai réseau.</strong> Nos partenaires recrutent directement dans nos promotions.</span></li>
+            <li><span><strong>Un lieu ouvert.</strong> Le campus reste accessible après la formation.</span></li>
+          </ul>
+          <div class="btn-row">
+            <a class="btn btn--primary" href="a-propos.html">Notre histoire</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================= ÉVÉNEMENTS ========================= -->
+    <section class="section">
+      <div class="container">
+        <header class="section-head" data-reveal>
+          <p class="eyebrow">Agenda</p>
+          <h2>Ce qui se passe bientôt</h2>
+          <p>Meetups, hackathons, ateliers découverte&nbsp;: la plupart de nos événements
+             sont gratuits et ouverts à tous.</p>
+        </header>
+
+        <div class="event-list">
+          <article class="event" data-reveal>
+            <p class="event__date"><span class="event__day">12</span><span class="event__month">Sept</span></p>
+            <div class="event__body">
+              <h3>Séance d’information — rentrée de septembre</h3>
+              <p>Présentation des parcours, du processus de sélection et visite du campus.</p>
+              <p class="event__meta"><span>18:00 – 20:00</span><span>Campus Molenbeek</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="evenements.html">S’inscrire</a></p>
+          </article>
+
+          <article class="event" data-reveal data-reveal-delay="90">
+            <p class="event__date"><span class="event__day">27</span><span class="event__month">Sept</span></p>
+            <div class="event__body">
+              <h3>Hackathon « Ville inclusive » — 48h</h3>
+              <p>Deux jours pour prototyper des services numériques utiles au quartier.</p>
+              <p class="event__meta"><span>Week-end</span><span>Campus Molenbeek</span><span>Équipes de 4</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--primary btn--sm" href="hackathon.html">Page de l’événement</a></p>
+          </article>
+
+          <article class="event" data-reveal data-reveal-delay="180">
+            <p class="event__date"><span class="event__day">09</span><span class="event__month">Oct</span></p>
+            <div class="event__body">
+              <h3>Atelier découverte&nbsp;: écrire ses premières lignes de code</h3>
+              <p>Trois heures pour comprendre ce qu’est vraiment le métier de développeur.</p>
+              <p class="event__meta"><span>14:00 – 17:00</span><span>Dès 16 ans</span><span>Gratuit</span></p>
+            </div>
+            <p class="event__cta"><a class="btn btn--ghost btn--sm" href="evenements.html">S’inscrire</a></p>
+          </article>
+        </div>
+
+        <div class="btn-row" data-reveal>
+          <a class="btn btn--ghost" href="evenements.html">Voir tout l’agenda</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================== TÉMOIGNAGES ========================= -->
+    <section class="section section--ink">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Ils sont passés par ici</p>
+          <h2>Des parcours, pas des statistiques</h2>
+        </header>
+
+        <div class="grid grid--3">
+          <figure class="quote" data-reveal>
+            <blockquote>« J’ai poussé la porte sans savoir ce qu’était une variable.
+              Neuf mois plus tard, je signais mon premier CDI comme développeuse. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">SB</span>
+              <span><cite>Sara B.</cite><small>Promotion Web 2023</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote" data-reveal data-reveal-delay="90">
+            <blockquote>« L’incubateur nous a donné ce qui nous manquait&nbsp;: un cadre,
+              des mentors et des utilisateurs pour tester notre app. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">YE</span>
+              <span><cite>Youssef E.</cite><small>Cofondateur, startup incubée</small></span>
+            </figcaption>
+          </figure>
+
+          <figure class="quote" data-reveal data-reveal-delay="180">
+            <blockquote>« Le coworking, c’est le seul endroit où je croise un lycéen,
+              une asbl et une scale-up dans la même journée. »</blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">LM</span>
+              <span><cite>Leïla M.</cite><small>Designer freelance</small></span>
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================= PARTENAIRES ======================== -->
+    <section class="section section--tight">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">Ils nous soutiennent</p>
+          <h2>Un projet porté par tout un écosystème</h2>
+        </header>
+        <div class="partners" data-reveal>
+          <p class="partner">Entreprises tech</p>
+          <p class="partner">Opérateurs télécom</p>
+          <p class="partner">Secteur bancaire</p>
+          <p class="partner">Région bruxelloise</p>
+          <p class="partner">Fondations privées</p>
+          <p class="partner">Communes partenaires</p>
+        </div>
+        <p class="form-note" style="margin-top: 1rem; text-align: center;">
+          Les partenaires réels sont à renseigner avec l’accord de chaque organisation.
+        </p>
+      </div>
+    </section>
+
+    <!-- ============================= CTA ============================ -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-banner" data-reveal>
+          <h2>Prêt·e à changer de trajectoire&nbsp;?</h2>
+          <p>Une candidature prend dix minutes. Aucun diplôme, aucun frais&nbsp;:
+             il suffit d’avoir envie d’apprendre.</p>
+          <div class="btn-row">
+            <a class="btn btn--light" href="formations.html#candidature">Déposer ma candidature</a>
+            <a class="btn btn--ghost" href="contact.html">Poser une question</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html">
+            <span class="brand__mark" aria-hidden="true">MG</span>
+            <span>Molen<b>Geek</b></span>
+          </a>
+          <p>Un écosystème tech ouvert à toutes et tous : formations gratuites, coworking
+             et incubation de startups, au cœur de Molenbeek.</p>
+          <div class="social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Explorer</h4>
+          <ul class="footer-links">
+            <li><a href="formations.html">Formations</a></li>
+            <li><a href="coworking.html">Coworking</a></li>
+            <li><a href="coworking.html#incubateur">Incubateur</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>MolenGeek</h4>
+          <ul class="footer-links">
+            <li><a href="a-propos.html">Notre histoire</a></li>
+            <li><a href="a-propos.html#equipe">L’équipe</a></li>
+            <li><a href="a-propos.html#partenaires">Partenaires</a></li>
+            <li><a href="contact.html">Nous contacter</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li>Rue Osseghem 53<br>1080 Molenbeek-Saint-Jean</li>
+            <li><a href="mailto:hello@molengeek.example">hello@molengeek.example</a></li>
+            <li><a href="tel:+3220000000">+32 2 000 00 00</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> MolenGeek — Site de démonstration.</p>
+        <p><a href="#main">Retour en haut ↑</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

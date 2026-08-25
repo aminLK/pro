@@ -1,5 +1,11 @@
 # N8N - Configuration Terminal
 
+> **Ce dépôt contient deux projets :**
+> - **`molengeek-site/`** — site vitrine statique MolenGeek (HTML/CSS/JS, sans build).
+>   Voir [`molengeek-site/README.md`](molengeek-site/README.md).
+> - La configuration N8N décrite ci-dessous.
+
+
 Ce projet vous permet de lancer et utiliser N8N directement depuis votre terminal.
 
 ## 📋 Prérequis

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact — MolenGeek</title>
+  <meta name="description" content="Contactez MolenGeek : formations, coworking, incubateur, partenariats. Rue Osseghem 53, 1080 Molenbeek-Saint-Jean.">
+  <meta name="theme-color" content="#ff6a13">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+
+  <!-- Open Graph / réseaux sociaux -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="MolenGeek">
+  <meta property="og:title" content="Contact — MolenGeek">
+  <meta property="og:description" content="Contactez MolenGeek : formations, coworking, incubateur, partenariats. Rue Osseghem 53, 1080 Molenbeek-Saint-Jean.">
+  <meta property="og:locale" content="fr_BE">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script src="assets/js/main.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Aller au contenu principal</a>
+
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a class="brand" href="index.html" aria-label="MolenGeek — retour à l’accueil">
+        <span class="brand__mark" aria-hidden="true">MG</span>
+        <span>Molen<b>Geek</b></span>
+      </a>
+
+      <nav class="nav" id="primary-nav" aria-label="Navigation principale">
+        <a href="index.html">Accueil</a>
+        <a href="formations.html">Formations</a>
+        <a href="coworking.html">Coworking &amp; Incubateur</a>
+        <a href="evenements.html">Événements</a>
+        <a href="a-propos.html">À propos</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="Changer de thème">🌙</button>
+        <a class="btn btn--primary btn--sm" href="formations.html#candidature">Je postule</a>
+        <button class="icon-btn nav-toggle" type="button" data-nav-toggle
+                aria-expanded="false" aria-controls="primary-nav" aria-label="Ouvrir le menu">☰</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============================ HERO ============================ -->
+    <section class="hero hero--page">
+      <div class="container hero__grid">
+        <div data-reveal>
+          <p class="eyebrow">Contact</p>
+          <h1>Parlons-en. <span class="text-brand">Vraiment.</span></h1>
+          <p class="lead">
+            Une question sur une formation, une envie de visiter le coworking, un
+            projet de partenariat&nbsp;? Écrivez-nous, passez nous voir, ou appelez —
+            l’accueil est ouvert du lundi au vendredi, de 9h à 18h.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================== FORMULAIRE ======================= -->
+    <section class="section">
+      <div class="container contact-grid">
+        <div data-reveal>
+          <h2>Envoyer un message</h2>
+          <p class="lead">Nous répondons sous deux jours ouvrables.</p>
+
+          <form data-contact-form novalidate>
+            <div class="field">
+              <label for="nom">Nom et prénom *</label>
+              <input type="text" id="nom" name="nom" required autocomplete="name">
+              <span class="error" id="nom-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="email">Adresse e-mail *</label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+              <span class="error" id="email-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="telephone">Téléphone (facultatif)</label>
+              <input type="tel" id="telephone" name="telephone" autocomplete="tel">
+              <span class="error" id="telephone-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="sujet">Votre demande concerne *</label>
+              <select id="sujet" name="sujet" required>
+                <option value="">— Choisissez un sujet —</option>
+                <option>Une formation</option>
+                <option>Le coworking</option>
+                <option>L’incubateur</option>
+                <option>Un partenariat ou un don</option>
+                <option>La presse</option>
+                <option>Devenir mentor bénévole</option>
+                <option>Autre</option>
+              </select>
+              <span class="error" id="sujet-error" role="alert"></span>
+            </div>
+
+            <div class="field">
+              <label for="message">Votre message *</label>
+              <textarea id="message" name="message" required minlength="30"
+                        placeholder="Dites-nous en quelques lignes ce dont vous avez besoin."></textarea>
+              <span class="error" id="message-error" role="alert"></span>
+            </div>
+
+            <button class="btn btn--primary" type="submit">Envoyer le message</button>
+            <p class="form-note" style="margin-top:.8rem;">
+              Démonstration&nbsp;: aucun message n’est réellement transmis. Le formulaire
+              valide uniquement les champs dans le navigateur.
+            </p>
+            <p class="form-status" data-form-status role="status" hidden></p>
+          </form>
+        </div>
+
+        <aside data-reveal data-reveal-delay="120">
+          <h2>Nous trouver</h2>
+          <ul class="info-list">
+            <li>
+              <span class="card__icon" aria-hidden="true">📍</span>
+              <span>
+                <strong>Campus MolenGeek</strong>
+                <span>Rue Osseghem 53<br>1080 Molenbeek-Saint-Jean, Belgique</span>
+              </span>
+            </li>
+            <li>
+              <span class="card__icon" aria-hidden="true">✉️</span>
+              <span>
+                <strong><a href="mailto:hello@molengeek.example">hello@molengeek.example</a></strong>
+                <span>Réponse sous 2 jours ouvrables</span>
+              </span>
+            </li>
+            <li>
+              <span class="card__icon" aria-hidden="true">📞</span>
+              <span>
+                <strong><a href="tel:+3220000000">+32 2 000 00 00</a></strong>
+                <span>Du lundi au vendredi, 9h – 18h</span>
+              </span>
+            </li>
+            <li>
+              <span class="card__icon" aria-hidden="true">🚇</span>
+              <span>
+                <strong>Accès</strong>
+                <span>Métro Ribaucourt ou Étangs Noirs, puis 5 minutes à pied.
+                      Bâtiment accessible PMR.</span>
+              </span>
+            </li>
+          </ul>
+
+          <div class="map-frame" style="margin-top: var(--space-md);">
+            <p>Carte interactive à intégrer ici<br>
+               <small>(OpenStreetMap ou Google Maps, selon vos choix RGPD)</small></p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============================== FAQ =========================== -->
+    <section class="section section--alt">
+      <div class="container">
+        <header class="section-head section-head--center" data-reveal>
+          <p class="eyebrow">FAQ</p>
+          <h2>Les questions qu’on nous pose le plus</h2>
+        </header>
+
+        <div class="faq" data-reveal style="max-width: 780px; margin-inline: auto;">
+          <details class="faq-item">
+            <summary>Puis-je visiter le campus sans rendez-vous&nbsp;?</summary>
+            <p>L’accueil est ouvert en journée, mais pour une visite guidée du coworking
+               mieux vaut réserver&nbsp;: mardi 11h ou jeudi 17h.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Comment savoir si je remplis les conditions&nbsp;?</summary>
+            <p>Il suffit d’avoir 16 ans minimum et d’être disponible sur la durée du
+               parcours. Le reste se discute lors de l’entretien de motivation.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Proposez-vous des formations pour les entreprises&nbsp;?</summary>
+            <p>Oui, des programmes courts peuvent être conçus sur mesure. Sélectionnez
+               « Un partenariat ou un don » dans le formulaire.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Je veux donner du matériel informatique, c’est possible&nbsp;?</summary>
+            <p>Avec plaisir, si le matériel est fonctionnel. Contactez-nous avant tout
+               dépôt afin d’organiser la réception.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Comment devenir mentor bénévole&nbsp;?</summary>
+            <p>Deux heures par semaine suffisent. Écrivez-nous en précisant votre
+               domaine&nbsp;: développement, design, data, RH ou entrepreneuriat.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================= CTA ============================ -->
+    <section class="section section--tight">
+      <div class="container">
+        <div class="cta-banner" data-reveal>
+          <h2>Envie de commencer tout de suite&nbsp;?</h2>
+          <p>Le catalogue de formations est en ligne, et les candidatures pour la
+             prochaine rentrée sont ouvertes.</p>
+          <div class="btn-row">
+            <a class="btn btn--light" href="formations.html#candidature">Postuler</a>
+            <a class="btn btn--ghost" href="evenements.html">Venir à une séance d’info</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand" href="index.html">
+            <span class="brand__mark" aria-hidden="true">MG</span>
+            <span>Molen<b>Geek</b></span>
+          </a>
+          <p>Un écosystème tech ouvert à toutes et tous : formations gratuites, coworking
+             et incubation de startups, au cœur de Molenbeek.</p>
+          <div class="social">
+            <a href="#" aria-label="LinkedIn">in</a>
+            <a href="#" aria-label="Instagram">ig</a>
+            <a href="#" aria-label="Facebook">f</a>
+            <a href="#" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <div>
+          <h4>Explorer</h4>
+          <ul class="footer-links">
+            <li><a href="formations.html">Formations</a></li>
+            <li><a href="coworking.html">Coworking</a></li>
+            <li><a href="coworking.html#incubateur">Incubateur</a></li>
+            <li><a href="evenements.html">Événements</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>MolenGeek</h4>
+          <ul class="footer-links">
+            <li><a href="a-propos.html">Notre histoire</a></li>
+            <li><a href="a-propos.html#equipe">L’équipe</a></li>
+            <li><a href="a-propos.html#partenaires">Partenaires</a></li>
+            <li><a href="contact.html">Nous contacter</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4>Contact</h4>
+          <ul class="footer-links">
+            <li>Rue Osseghem 53<br>1080 Molenbeek-Saint-Jean</li>
+            <li><a href="mailto:hello@molengeek.example">hello@molengeek.example</a></li>
+            <li><a href="tel:+3220000000">+32 2 000 00 00</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span data-year>2026</span> MolenGeek — Site de démonstration.</p>
+        <p><a href="#main">Retour en haut ↑</a></p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
